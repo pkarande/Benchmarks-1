@@ -10,6 +10,8 @@ try:
 except ImportError:
     import ConfigParser as configparser
 
+import tensorflow as tf
+import horovod.tensorflow as hvd
 from keras import backend as K
 
 from keras.layers import Input, Dense, Dropout, Activation, Conv1D, MaxPooling1D, Flatten
