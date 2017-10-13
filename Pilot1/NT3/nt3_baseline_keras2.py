@@ -23,7 +23,7 @@ from keras.callbacks import ModelCheckpoint, CSVLogger, ReduceLROnPlateau
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, MaxAbsScaler
 
-TIMEOUT=3600 # in sec; set this to -1 for no timeout 
+TIMEOUT = -1 # in sec; set this to -1 for no timeout 
 file_path = os.path.dirname(os.path.realpath(__file__))
 lib_path = os.path.abspath(os.path.join(file_path, '..', 'common'))
 sys.path.append(lib_path)
@@ -33,6 +33,16 @@ sys.path.append(lib_path2)
 import data_utils
 import p1_common, p1_common_keras
 from solr_keras import CandleRemoteMonitor, compute_trainable_params, TerminateOnTimeOut
+
+import horovod.tensorflow as hvd
+# Initialize hovorod
+hvd.init()
+
+# Pin GPU to be used to process local rank (one GPU per process)
+config=tf.ConfigProto()
+config.gpu_options.allow_growth = True
+config.gpu_options.visible_device_list = str(hvd.local_rank())
+K.set_session(tf.Session(config=config))
 
 
 #url_nt3 = 'ftp://ftp.mcs.anl.gov/pub/candle/public/benchmarks/Pilot1/normal-tumor/'
@@ -236,9 +246,15 @@ def run(gParameters):
     kerasDefaults = p1_common.keras_default_config()
 
     # Define optimizer
-    optimizer = p1_common_keras.build_optimizer(gParameters['optimizer'],
-                                                gParameters['learning_rate'],
-                                                kerasDefaults)
+    # optimizer = p1_common_keras.build_optimizer(gParameters['optimizer'],
+    #                                             gParameters['learning_rate'],
+    #                                             kerasDefaults)
+
+    # Adjust learning rate based on number of GPUs (naive approach).
+    opt = tf.train.GradientDescentOptimizer(gParameters['learning_rate'] * hvd.size())
+
+    # Add Horovod Distributed Optimizer.
+    optimizer = hvd.DistributedOptimizer(opt)
 
     model.summary()
     model.compile(loss=gParameters['loss'],
@@ -264,13 +280,13 @@ def run(gParameters):
     history = model.fit(X_train, Y_train,
                     batch_size=gParameters['batch_size'],
                     epochs=gParameters['epochs'],
-                    verbose=1,
+                    verbose=0,
                     validation_data=(X_test, Y_test),
-                    callbacks = [csv_logger, reduce_lr, candleRemoteMonitor, timeoutMonitor])
+                    callbacks = [csv_logger, candleRemoteMonitor, timeoutMonitor])
 
     score = model.evaluate(X_test, Y_test, verbose=0)
 
-    if False:
+    if True:
         print('Test score:', score[0])
         print('Test accuracy:', score[1])
         # serialize model to JSON
