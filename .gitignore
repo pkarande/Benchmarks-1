@@ -1,0 +1,12 @@
+*.pyc
+__pycache__/
+toHarsh/
+toHarsh.zip
+Data/
+*.xtc
+*.tpr
+*.sh
+*.yaml
+3k_*
+Pilot2/P2B1/fromRAY/
+Pilot2/P2B1/moleAE_results/
