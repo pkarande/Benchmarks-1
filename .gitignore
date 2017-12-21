@@ -5,7 +5,6 @@ toHarsh.zip
 Data/
 *.xtc
 *.tpr
-*.sh
 *.yaml
 3k_*
 Pilot2/P2B1/fromRAY/
@@ -13,4 +12,6 @@ Pilot2/P2B1/moleAE_results/
 *.out
 *.npy
 *.npz
+*.sh
 Pilot2/P2B1/molecular_AE_results/
+Pilot2/P2B2/
