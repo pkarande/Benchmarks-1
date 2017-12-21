@@ -1,0 +1,97 @@
+==> Error: Package py-ipython/4ftouvo is already activated.
+==> Error: Package py-keras/gdsvzfu is already activated.
+==> Error: Package py-tqdm/upmvvxo is already activated.
+==> Error: Package py-scikit-learn/bpcghdm is already activated.
+==> Error: Package py-h5py/abisifu is already activated.
+Python 2.7.13 (default, Jul 10 2017, 12:19:14) 
+Type "copyright", "credits" or "license" for more information.
+
+IPython 5.1.0 -- An enhanced Interactive Python.
+?         -> Introduction and overview of IPython's features.
+%quickref -> Quick reference.
+help      -> Python's own help system.
+object?   -> Details about 'object', use 'object??' for extra details.
+--------------------------------------------------------------------------
+It looks like opal_init failed for some reason; your parallel process is
+likely to abort.  There are many reasons that a parallel process can
+fail during opal_init; some of which are due to configuration or
+environment problems.  This failure appears to be an internal failure;
+here's some additional information (which may only be relevant to an
+Open MPI developer):
+
+  opal_shmem_base_select failed
+  --> Returned value -1 instead of OPAL_SUCCESS
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+It looks like orte_init failed for some reason; your parallel process is
+likely to abort.  There are many reasons that a parallel process can
+fail during orte_init; some of which are due to configuration or
+environment problems.  This failure appears to be an internal failure;
+here's some additional information (which may only be relevant to an
+Open MPI developer):
+
+  opal_init failed
+  --> Returned value Error (-1) instead of ORTE_SUCCESS
+--------------------------------------------------------------------------
+*** An error occurred in MPI_Init_thread
+*** on a NULL communicator
+*** MPI_ERRORS_ARE_FATAL (processes in this communicator will now abort,
+***    and potentially your MPI job)
+[ray37:94226] Local abort before MPI_INIT completed completed successfully, but am not able to aggregate error messages, and not able to guarantee that all other processes were killed!
+--------------------------------------------------------------------------
+It looks like MPI_INIT failed for some reason; your parallel process is
+likely to abort.  There are many reasons that a parallel process can
+fail during MPI_INIT; some of which are due to configuration or environment
+problems.  This failure appears to be an internal failure; here's some
+additional information (which may only be relevant to an Open MPI
+developer):
+
+  ompi_mpi_init: ompi_rte_init failed
+  --> Returned "Error" (-1) instead of "Success" (0)
+--------------------------------------------------------------------------
+-------------------------------------------------------
+Primary job  terminated normally, but 1 process returned
+a non-zero exit code.. Per user-direction, the job has been aborted.
+-------------------------------------------------------
+--------------------------------------------------------------------------
+mpirun detected that one or more processes exited with non-zero status, thus causing
+the job to be terminated. The first process to do so was:
+
+  Process name: [[37051,1],0]
+  Exit code:    1
+--------------------------------------------------------------------------
+Done
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@ray37>
+Subject: Job 31897: <run_test.sh> in cluster <ray> Done
+
+Job <run_test.sh> was submitted from host <ray23> by user <karande1> in cluster <ray>.
+Job was executed on host(s) <ray37>, in queue <pbatch>, as user <karande1> in cluster <ray>.
+</g/g90/karande1> was used as the home directory.
+</p/gscratchr/karande1/Benchmarks> was used as the working directory.
+Started at Results reported on 
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+run_test.sh
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   25.18 sec.
+    Max Memory :                                 75 MB
+    Average Memory :                             39.67 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              5
+    Max Threads :                                10
+    Run time :                                   39 sec.
+    Turnaround time :                            40 sec.
+
+The output (if any) is above this job summary.
+

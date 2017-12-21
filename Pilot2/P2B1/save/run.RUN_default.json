@@ -1,0 +1,1154 @@
+[
+    {
+        "status": "Started",
+        "start_time": "2017-09-27 12:08:23.015627",
+        "parameters": [
+            "non_trainable_params: 0",
+            "shuffle: True",
+            "verbose: False",
+            "epochs: 10",
+            "seed: False",
+            "optimizer: adam",
+            "weight_decay: 0.0005",
+            "conv_bool: True",
+            "backend: tensorflow",
+            "train_bool: True",
+            "noise_factor: 0.0",
+            "type_bool: False",
+            "home_dir: .",
+            "activation: relu",
+            "save_path: None",
+            "molecular_nonlinearity: elu",
+            "save: save",
+            "base_memo: None",
+            "num_hidden: [512, 32]",
+            "total_params: 37425824",
+            "config_file: /Users/karande1/Benchmarks/Pilot2/P2B1/p2b1_default_model.txt",
+            "learning_rate: 0.01",
+            "molecular_epochs: 1",
+            "batch_size: 32",
+            "gpus: []",
+            "molecular_num_hidden: [54, 12]",
+            "logfile: None",
+            "cool: False",
+            "case: CenterZ",
+            "loss: mse",
+            "set_sel: 3k_Disordered",
+            "datatype: <type 'numpy.float32'>",
+            "trainable_params: 37425824",
+            "weight_path: None",
+            "fig_bool: False"
+        ],
+        "experiment_id": "EXP_default",
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Running"
+        },
+        "training_loss": {
+            "set": 0.022967255747828045
+        },
+        "run_progress": {
+            "add": [
+                "epoch: 1/10, duration: 0.96756s, loss: 0.0229672557478, val_loss: None"
+            ]
+        },
+        "validation_loss": {
+            "set": null
+        },
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Finished"
+        },
+        "date_modified": {
+            "set": "NOW"
+        },
+        "end_time": {
+            "set": "2017-09-27 12:08:23.983403"
+        },
+        "runtime_hours": {
+            "set": 0.00026882666666666665
+        },
+        "run_id": "RUN_default"
+    }
+][
+    {
+        "status": "Started",
+        "start_time": "2017-09-27 12:14:05.947914",
+        "parameters": [
+            "non_trainable_params: 0",
+            "shuffle: True",
+            "verbose: False",
+            "epochs: 10",
+            "seed: False",
+            "optimizer: adam",
+            "weight_decay: 0.0005",
+            "conv_bool: True",
+            "backend: theano",
+            "train_bool: True",
+            "noise_factor: 0.0",
+            "type_bool: False",
+            "home_dir: .",
+            "activation: relu",
+            "save_path: None",
+            "molecular_nonlinearity: elu",
+            "save: save",
+            "base_memo: None",
+            "num_hidden: [512, 32]",
+            "total_params: 37425824",
+            "config_file: /Users/karande1/Benchmarks/Pilot2/P2B1/p2b1_default_model.txt",
+            "learning_rate: 0.01",
+            "molecular_epochs: 1",
+            "batch_size: 32",
+            "gpus: []",
+            "molecular_num_hidden: [54, 12]",
+            "logfile: None",
+            "cool: False",
+            "case: CenterZ",
+            "loss: mse",
+            "set_sel: 3k_Disordered",
+            "datatype: <type 'numpy.float32'>",
+            "trainable_params: 37425824",
+            "weight_path: None",
+            "fig_bool: False"
+        ],
+        "experiment_id": "EXP_default",
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Running"
+        },
+        "training_loss": {
+            "set": 0.022082094161918288
+        },
+        "run_progress": {
+            "add": [
+                "epoch: 1/10, duration: 0.781326s, loss: 0.0220820941619, val_loss: None"
+            ]
+        },
+        "validation_loss": {
+            "set": null
+        },
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Finished"
+        },
+        "date_modified": {
+            "set": "NOW"
+        },
+        "end_time": {
+            "set": "2017-09-27 12:14:06.729460"
+        },
+        "runtime_hours": {
+            "set": 0.0002170961111111111
+        },
+        "run_id": "RUN_default"
+    }
+][
+    {
+        "status": "Started",
+        "start_time": "2017-10-03 08:07:22.844793",
+        "parameters": [
+            "non_trainable_params: 0",
+            "shuffle: True",
+            "verbose: False",
+            "epochs: 10",
+            "seed: False",
+            "optimizer: adam",
+            "weight_decay: 0.0005",
+            "conv_bool: False",
+            "backend: theano",
+            "train_bool: True",
+            "noise_factor: 0.0",
+            "type_bool: False",
+            "home_dir: .",
+            "activation: relu",
+            "save_path: None",
+            "molecular_nonlinearity: elu",
+            "save: save",
+            "base_memo: None",
+            "num_hidden: [512, 32]",
+            "total_params: 37425824",
+            "config_file: /Users/karande1/Benchmarks/Pilot2/P2B1/p2b1_default_model.txt",
+            "learning_rate: 0.01",
+            "molecular_epochs: 1",
+            "batch_size: 32",
+            "gpus: []",
+            "molecular_num_hidden: [54, 12]",
+            "logfile: None",
+            "cool: False",
+            "case: CenterZ",
+            "loss: mse",
+            "set_sel: 3k_Disordered",
+            "datatype: <type 'numpy.float32'>",
+            "trainable_params: 37425824",
+            "weight_path: None",
+            "molecular_nbrs: 10",
+            "fig_bool: False"
+        ],
+        "experiment_id": "EXP_default",
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Running"
+        },
+        "training_loss": {
+            "set": 0.039746221792148914
+        },
+        "run_progress": {
+            "add": [
+                "epoch: 1/10, duration: 0.505559s, loss: 0.0397462217921, val_loss: None"
+            ]
+        },
+        "validation_loss": {
+            "set": null
+        },
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Finished"
+        },
+        "date_modified": {
+            "set": "NOW"
+        },
+        "end_time": {
+            "set": "2017-10-03 08:07:23.350666"
+        },
+        "runtime_hours": {
+            "set": 0.0001405202777777778
+        },
+        "run_id": "RUN_default"
+    }
+][
+    {
+        "status": "Started",
+        "start_time": "2017-10-03 08:08:08.090368",
+        "parameters": [
+            "non_trainable_params: 0",
+            "shuffle: True",
+            "verbose: False",
+            "epochs: 10",
+            "seed: False",
+            "optimizer: adam",
+            "weight_decay: 0.0005",
+            "conv_bool: False",
+            "backend: theano",
+            "train_bool: True",
+            "noise_factor: 0.0",
+            "type_bool: True",
+            "home_dir: .",
+            "activation: relu",
+            "save_path: None",
+            "molecular_nonlinearity: elu",
+            "save: save",
+            "base_memo: None",
+            "num_hidden: [512, 32]",
+            "total_params: 37425824",
+            "config_file: /Users/karande1/Benchmarks/Pilot2/P2B1/p2b1_default_model.txt",
+            "learning_rate: 0.01",
+            "molecular_epochs: 1",
+            "batch_size: 32",
+            "gpus: []",
+            "molecular_num_hidden: [54, 12]",
+            "logfile: None",
+            "cool: False",
+            "case: CenterZ",
+            "loss: mse",
+            "set_sel: 3k_Disordered",
+            "datatype: <type 'numpy.float32'>",
+            "trainable_params: 37425824",
+            "weight_path: None",
+            "molecular_nbrs: 10",
+            "fig_bool: False"
+        ],
+        "experiment_id": "EXP_default",
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Running"
+        },
+        "training_loss": {
+            "set": 0.084340330762298479
+        },
+        "run_progress": {
+            "add": [
+                "epoch: 1/10, duration: 0.608757s, loss: 0.0843403307623, val_loss: None"
+            ]
+        },
+        "validation_loss": {
+            "set": null
+        },
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Finished"
+        },
+        "date_modified": {
+            "set": "NOW"
+        },
+        "end_time": {
+            "set": "2017-10-03 08:08:08.699375"
+        },
+        "runtime_hours": {
+            "set": 0.0001691686111111111
+        },
+        "run_id": "RUN_default"
+    }
+][
+    {
+        "status": "Started",
+        "start_time": "2017-10-03 11:30:03.888604",
+        "parameters": [
+            "non_trainable_params: 0",
+            "shuffle: True",
+            "verbose: False",
+            "epochs: 10",
+            "seed: False",
+            "optimizer: adam",
+            "weight_decay: 0.0005",
+            "conv_bool: False",
+            "backend: theano",
+            "train_bool: True",
+            "noise_factor: 0.0",
+            "type_bool: False",
+            "home_dir: .",
+            "activation: relu",
+            "save_path: None",
+            "molecular_nonlinearity: elu",
+            "save: save",
+            "base_memo: None",
+            "num_hidden: [512, 32]",
+            "total_params: 37425824",
+            "config_file: /Users/karande1/Benchmarks/Pilot2/P2B1/p2b1_default_model.txt",
+            "learning_rate: 0.01",
+            "molecular_epochs: 1",
+            "batch_size: 32",
+            "gpus: []",
+            "molecular_num_hidden: [54, 12]",
+            "logfile: None",
+            "cool: False",
+            "case: CenterZ",
+            "loss: mse",
+            "set_sel: 3k_Disordered",
+            "datatype: <type 'numpy.float32'>",
+            "trainable_params: 37425824",
+            "weight_path: None",
+            "molecular_nbrs: 10",
+            "fig_bool: False"
+        ],
+        "experiment_id": "EXP_default",
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Running"
+        },
+        "training_loss": {
+            "set": 0.040100066363811492
+        },
+        "run_progress": {
+            "add": [
+                "epoch: 1/10, duration: 0.496791s, loss: 0.0401000663638, val_loss: None"
+            ]
+        },
+        "validation_loss": {
+            "set": null
+        },
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Finished"
+        },
+        "date_modified": {
+            "set": "NOW"
+        },
+        "end_time": {
+            "set": "2017-10-03 11:30:04.386332"
+        },
+        "runtime_hours": {
+            "set": 0.00013825777777777779
+        },
+        "run_id": "RUN_default"
+    }
+][
+    {
+        "status": "Started",
+        "start_time": "2017-10-03 11:37:36.473506",
+        "parameters": [
+            "non_trainable_params: 0",
+            "shuffle: True",
+            "verbose: False",
+            "epochs: 10",
+            "seed: False",
+            "optimizer: adam",
+            "weight_decay: 0.0005",
+            "conv_bool: False",
+            "backend: theano",
+            "train_bool: True",
+            "noise_factor: 0.0",
+            "type_bool: True",
+            "home_dir: .",
+            "activation: relu",
+            "save_path: None",
+            "molecular_nonlinearity: elu",
+            "save: save",
+            "base_memo: None",
+            "num_hidden: [512, 32]",
+            "total_params: 37425824",
+            "config_file: /Users/karande1/Benchmarks/Pilot2/P2B1/p2b1_default_model.txt",
+            "learning_rate: 0.01",
+            "molecular_epochs: 1",
+            "batch_size: 32",
+            "gpus: []",
+            "molecular_num_hidden: [54, 12]",
+            "logfile: None",
+            "cool: False",
+            "case: CenterZ",
+            "loss: mse",
+            "set_sel: 3k_Disordered",
+            "datatype: <type 'numpy.float32'>",
+            "trainable_params: 37425824",
+            "weight_path: None",
+            "molecular_nbrs: 10",
+            "fig_bool: False"
+        ],
+        "experiment_id": "EXP_default",
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Running"
+        },
+        "training_loss": {
+            "set": 0.083677104311554049
+        },
+        "run_progress": {
+            "add": [
+                "epoch: 1/10, duration: 0.542728s, loss: 0.0836771043116, val_loss: None"
+            ]
+        },
+        "validation_loss": {
+            "set": null
+        },
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Finished"
+        },
+        "date_modified": {
+            "set": "NOW"
+        },
+        "end_time": {
+            "set": "2017-10-03 11:37:37.016500"
+        },
+        "runtime_hours": {
+            "set": 0.00015083166666666665
+        },
+        "run_id": "RUN_default"
+    }
+][
+    {
+        "status": "Started",
+        "start_time": "2017-10-03 11:38:16.197512",
+        "parameters": [
+            "non_trainable_params: 0",
+            "shuffle: True",
+            "verbose: False",
+            "epochs: 10",
+            "seed: False",
+            "optimizer: adam",
+            "weight_decay: 0.0005",
+            "conv_bool: True",
+            "backend: theano",
+            "train_bool: True",
+            "noise_factor: 0.0",
+            "type_bool: True",
+            "home_dir: .",
+            "activation: relu",
+            "save_path: None",
+            "molecular_nonlinearity: elu",
+            "save: save",
+            "base_memo: None",
+            "num_hidden: [512, 32]",
+            "total_params: 37425824",
+            "config_file: /Users/karande1/Benchmarks/Pilot2/P2B1/p2b1_default_model.txt",
+            "learning_rate: 0.01",
+            "molecular_epochs: 1",
+            "batch_size: 32",
+            "gpus: []",
+            "molecular_num_hidden: [54, 12]",
+            "logfile: None",
+            "cool: False",
+            "case: CenterZ",
+            "loss: mse",
+            "set_sel: 3k_Disordered",
+            "datatype: <type 'numpy.float32'>",
+            "trainable_params: 37425824",
+            "weight_path: None",
+            "molecular_nbrs: 10",
+            "fig_bool: False"
+        ],
+        "experiment_id": "EXP_default",
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Running"
+        },
+        "training_loss": {
+            "set": 0.060890554715144006
+        },
+        "run_progress": {
+            "add": [
+                "epoch: 1/10, duration: 10.440234s, loss: 0.0608905547151, val_loss: None"
+            ]
+        },
+        "validation_loss": {
+            "set": null
+        },
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Finished"
+        },
+        "date_modified": {
+            "set": "NOW"
+        },
+        "end_time": {
+            "set": "2017-10-03 11:38:26.638296"
+        },
+        "runtime_hours": {
+            "set": 0.002900217777777778
+        },
+        "run_id": "RUN_default"
+    }
+][
+    {
+        "status": "Started",
+        "start_time": "2017-10-03 11:40:40.013308",
+        "parameters": [
+            "non_trainable_params: 0",
+            "shuffle: True",
+            "verbose: False",
+            "epochs: 10",
+            "seed: False",
+            "optimizer: adam",
+            "weight_decay: 0.0005",
+            "conv_bool: True",
+            "backend: tensorflow",
+            "train_bool: True",
+            "noise_factor: 0.0",
+            "type_bool: True",
+            "home_dir: .",
+            "activation: relu",
+            "save_path: None",
+            "molecular_nonlinearity: elu",
+            "save: save",
+            "base_memo: None",
+            "num_hidden: [512, 32]",
+            "total_params: 37425824",
+            "config_file: /Users/karande1/Benchmarks/Pilot2/P2B1/p2b1_default_model.txt",
+            "learning_rate: 0.01",
+            "molecular_epochs: 1",
+            "batch_size: 32",
+            "gpus: []",
+            "molecular_num_hidden: [54, 12]",
+            "logfile: None",
+            "cool: False",
+            "case: CenterZ",
+            "loss: mse",
+            "set_sel: 3k_Disordered",
+            "datatype: <type 'numpy.float32'>",
+            "trainable_params: 37425824",
+            "weight_path: None",
+            "molecular_nbrs: 10",
+            "fig_bool: False"
+        ],
+        "experiment_id": "EXP_default",
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Running"
+        },
+        "training_loss": {
+            "set": 0.058227888455516415
+        },
+        "run_progress": {
+            "add": [
+                "epoch: 1/10, duration: 6.284464s, loss: 0.0582278884555, val_loss: None"
+            ]
+        },
+        "validation_loss": {
+            "set": null
+        },
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Finished"
+        },
+        "date_modified": {
+            "set": "NOW"
+        },
+        "end_time": {
+            "set": "2017-10-03 11:40:46.297971"
+        },
+        "runtime_hours": {
+            "set": 0.0017457397222222222
+        },
+        "run_id": "RUN_default"
+    }
+][
+    {
+        "status": "Started",
+        "start_time": "2017-10-03 11:41:29.987982",
+        "parameters": [
+            "non_trainable_params: 0",
+            "shuffle: True",
+            "verbose: False",
+            "epochs: 10",
+            "seed: False",
+            "optimizer: adam",
+            "weight_decay: 0.0005",
+            "conv_bool: False",
+            "backend: tensorflow",
+            "train_bool: True",
+            "noise_factor: 0.0",
+            "type_bool: True",
+            "home_dir: .",
+            "activation: relu",
+            "save_path: None",
+            "molecular_nonlinearity: elu",
+            "save: save",
+            "base_memo: None",
+            "num_hidden: [512, 32]",
+            "total_params: 37425824",
+            "config_file: /Users/karande1/Benchmarks/Pilot2/P2B1/p2b1_default_model.txt",
+            "learning_rate: 0.01",
+            "molecular_epochs: 1",
+            "batch_size: 32",
+            "gpus: []",
+            "molecular_num_hidden: [54, 12]",
+            "logfile: None",
+            "cool: False",
+            "case: CenterZ",
+            "loss: mse",
+            "set_sel: 3k_Disordered",
+            "datatype: <type 'numpy.float32'>",
+            "trainable_params: 37425824",
+            "weight_path: None",
+            "molecular_nbrs: 10",
+            "fig_bool: False"
+        ],
+        "experiment_id": "EXP_default",
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Running"
+        },
+        "training_loss": {
+            "set": 0.075330950751116399
+        },
+        "run_progress": {
+            "add": [
+                "epoch: 1/10, duration: 1.669444s, loss: 0.0753309507511, val_loss: None"
+            ]
+        },
+        "validation_loss": {
+            "set": null
+        },
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Finished"
+        },
+        "date_modified": {
+            "set": "NOW"
+        },
+        "end_time": {
+            "set": "2017-10-03 11:41:31.657637"
+        },
+        "runtime_hours": {
+            "set": 0.00046379305555555554
+        },
+        "run_id": "RUN_default"
+    }
+][
+    {
+        "status": "Started",
+        "start_time": "2017-10-03 11:42:19.215448",
+        "parameters": [
+            "non_trainable_params: 0",
+            "shuffle: True",
+            "verbose: False",
+            "epochs: 10",
+            "seed: False",
+            "optimizer: adam",
+            "weight_decay: 0.0005",
+            "conv_bool: False",
+            "backend: tensorflow",
+            "train_bool: True",
+            "noise_factor: 0.0",
+            "type_bool: False",
+            "home_dir: .",
+            "activation: relu",
+            "save_path: None",
+            "molecular_nonlinearity: elu",
+            "save: save",
+            "base_memo: None",
+            "num_hidden: [512, 32]",
+            "total_params: 37425824",
+            "config_file: /Users/karande1/Benchmarks/Pilot2/P2B1/p2b1_default_model.txt",
+            "learning_rate: 0.01",
+            "molecular_epochs: 1",
+            "batch_size: 32",
+            "gpus: []",
+            "molecular_num_hidden: [54, 12]",
+            "logfile: None",
+            "cool: False",
+            "case: CenterZ",
+            "loss: mse",
+            "set_sel: 3k_Disordered",
+            "datatype: <type 'numpy.float32'>",
+            "trainable_params: 37425824",
+            "weight_path: None",
+            "molecular_nbrs: 10",
+            "fig_bool: False"
+        ],
+        "experiment_id": "EXP_default",
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Running"
+        },
+        "training_loss": {
+            "set": 0.045378074187197186
+        },
+        "run_progress": {
+            "add": [
+                "epoch: 1/10, duration: 1.55321s, loss: 0.0453780741872, val_loss: None"
+            ]
+        },
+        "validation_loss": {
+            "set": null
+        },
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Finished"
+        },
+        "date_modified": {
+            "set": "NOW"
+        },
+        "end_time": {
+            "set": "2017-10-03 11:42:20.768916"
+        },
+        "runtime_hours": {
+            "set": 0.0004315188888888889
+        },
+        "run_id": "RUN_default"
+    }
+][
+    {
+        "status": "Started",
+        "start_time": "2017-10-03 11:43:02.903237",
+        "parameters": [
+            "non_trainable_params: 0",
+            "shuffle: True",
+            "verbose: False",
+            "epochs: 10",
+            "seed: False",
+            "optimizer: adam",
+            "weight_decay: 0.0005",
+            "conv_bool: True",
+            "backend: tensorflow",
+            "train_bool: True",
+            "noise_factor: 0.0",
+            "type_bool: False",
+            "home_dir: .",
+            "activation: relu",
+            "save_path: None",
+            "molecular_nonlinearity: elu",
+            "save: save",
+            "base_memo: None",
+            "num_hidden: [512, 32]",
+            "total_params: 37425824",
+            "config_file: /Users/karande1/Benchmarks/Pilot2/P2B1/p2b1_default_model.txt",
+            "learning_rate: 0.01",
+            "molecular_epochs: 1",
+            "batch_size: 32",
+            "gpus: []",
+            "molecular_num_hidden: [54, 12]",
+            "logfile: None",
+            "cool: False",
+            "case: CenterZ",
+            "loss: mse",
+            "set_sel: 3k_Disordered",
+            "datatype: <type 'numpy.float32'>",
+            "trainable_params: 37425824",
+            "weight_path: None",
+            "molecular_nbrs: 10",
+            "fig_bool: False"
+        ],
+        "experiment_id": "EXP_default",
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Running"
+        },
+        "training_loss": {
+            "set": 0.029726401108660195
+        },
+        "run_progress": {
+            "add": [
+                "epoch: 1/10, duration: 4.623702s, loss: 0.0297264011087, val_loss: None"
+            ]
+        },
+        "validation_loss": {
+            "set": null
+        },
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Finished"
+        },
+        "date_modified": {
+            "set": "NOW"
+        },
+        "end_time": {
+            "set": "2017-10-03 11:43:07.527129"
+        },
+        "runtime_hours": {
+            "set": 0.0012844144444444444
+        },
+        "run_id": "RUN_default"
+    }
+][
+    {
+        "status": "Started",
+        "start_time": "2017-10-03 11:43:54.564917",
+        "parameters": [
+            "non_trainable_params: 0",
+            "shuffle: True",
+            "verbose: False",
+            "epochs: 10",
+            "seed: False",
+            "optimizer: adam",
+            "weight_decay: 0.0005",
+            "conv_bool: True",
+            "backend: theano",
+            "train_bool: True",
+            "noise_factor: 0.0",
+            "type_bool: False",
+            "home_dir: .",
+            "activation: relu",
+            "save_path: None",
+            "molecular_nonlinearity: elu",
+            "save: save",
+            "base_memo: None",
+            "num_hidden: [512, 32]",
+            "total_params: 37425824",
+            "config_file: /Users/karande1/Benchmarks/Pilot2/P2B1/p2b1_default_model.txt",
+            "learning_rate: 0.01",
+            "molecular_epochs: 1",
+            "batch_size: 32",
+            "gpus: []",
+            "molecular_num_hidden: [54, 12]",
+            "logfile: None",
+            "cool: False",
+            "case: CenterZ",
+            "loss: mse",
+            "set_sel: 3k_Disordered",
+            "datatype: <type 'numpy.float32'>",
+            "trainable_params: 37425824",
+            "weight_path: None",
+            "molecular_nbrs: 10",
+            "fig_bool: False"
+        ],
+        "experiment_id": "EXP_default",
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Running"
+        },
+        "training_loss": {
+            "set": 0.03209754507008352
+        },
+        "run_progress": {
+            "add": [
+                "epoch: 1/10, duration: 7.620636s, loss: 0.0320975450701, val_loss: None"
+            ]
+        },
+        "validation_loss": {
+            "set": null
+        },
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Finished"
+        },
+        "date_modified": {
+            "set": "NOW"
+        },
+        "end_time": {
+            "set": "2017-10-03 11:44:02.185776"
+        },
+        "runtime_hours": {
+            "set": 0.002116905277777778
+        },
+        "run_id": "RUN_default"
+    }
+][
+    {
+        "status": "Started",
+        "start_time": "2017-10-03 13:30:27.617372",
+        "parameters": [
+            "non_trainable_params: 0",
+            "shuffle: True",
+            "verbose: False",
+            "epochs: 10",
+            "seed: False",
+            "optimizer: adam",
+            "weight_decay: 0.0005",
+            "conv_bool: False",
+            "backend: theano",
+            "train_bool: True",
+            "noise_factor: 0.0",
+            "type_bool: False",
+            "home_dir: .",
+            "activation: relu",
+            "save_path: None",
+            "molecular_nonlinearity: elu",
+            "save: save",
+            "base_memo: None",
+            "num_hidden: [512, 32]",
+            "total_params: 37425824",
+            "config_file: /Users/karande1/Benchmarks/Pilot2/P2B1/p2b1_default_model.txt",
+            "learning_rate: 0.01",
+            "molecular_epochs: 1",
+            "batch_size: 32",
+            "gpus: []",
+            "molecular_num_hidden: [54, 12]",
+            "logfile: None",
+            "cool: False",
+            "case: CenterZ",
+            "loss: mse",
+            "set_sel: 3k_Disordered",
+            "datatype: <type 'numpy.float32'>",
+            "trainable_params: 37425824",
+            "weight_path: None",
+            "molecular_nbrs: 10",
+            "fig_bool: False"
+        ],
+        "experiment_id": "EXP_default",
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Running"
+        },
+        "training_loss": {
+            "set": 0.033889809682181006
+        },
+        "run_progress": {
+            "add": [
+                "epoch: 1/10, duration: 0.422175s, loss: 0.0338898096822, val_loss: None"
+            ]
+        },
+        "validation_loss": {
+            "set": null
+        },
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Finished"
+        },
+        "date_modified": {
+            "set": "NOW"
+        },
+        "end_time": {
+            "set": "2017-10-03 13:30:28.039835"
+        },
+        "runtime_hours": {
+            "set": 0.00011735083333333332
+        },
+        "run_id": "RUN_default"
+    }
+][
+    {
+        "status": "Started",
+        "start_time": "2017-10-03 13:31:05.227649",
+        "parameters": [
+            "non_trainable_params: 0",
+            "shuffle: True",
+            "verbose: False",
+            "epochs: 10",
+            "seed: False",
+            "optimizer: adam",
+            "weight_decay: 0.0005",
+            "conv_bool: False",
+            "backend: theano",
+            "train_bool: True",
+            "noise_factor: 0.0",
+            "type_bool: False",
+            "home_dir: .",
+            "activation: relu",
+            "save_path: None",
+            "molecular_nonlinearity: elu",
+            "save: save",
+            "base_memo: None",
+            "num_hidden: [512, 32]",
+            "total_params: 37425824",
+            "config_file: /Users/karande1/Benchmarks/Pilot2/P2B1/p2b1_default_model.txt",
+            "learning_rate: 0.01",
+            "molecular_epochs: 1",
+            "batch_size: 32",
+            "gpus: []",
+            "molecular_num_hidden: [54, 12]",
+            "logfile: None",
+            "cool: False",
+            "case: CenterZ",
+            "loss: mse",
+            "set_sel: 3k_Disordered",
+            "datatype: <type 'numpy.float32'>",
+            "trainable_params: 37425824",
+            "weight_path: None",
+            "molecular_nbrs: 10",
+            "fig_bool: False"
+        ],
+        "experiment_id": "EXP_default",
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Running"
+        },
+        "training_loss": {
+            "set": 0.04801743687375596
+        },
+        "run_progress": {
+            "add": [
+                "epoch: 1/10, duration: 0.44289s, loss: 0.0480174368738, val_loss: None"
+            ]
+        },
+        "validation_loss": {
+            "set": null
+        },
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Finished"
+        },
+        "date_modified": {
+            "set": "NOW"
+        },
+        "end_time": {
+            "set": "2017-10-03 13:31:05.670775"
+        },
+        "runtime_hours": {
+            "set": 0.00012309055555555557
+        },
+        "run_id": "RUN_default"
+    }
+][
+    {
+        "status": "Started",
+        "start_time": "2017-10-25 15:17:26.519813",
+        "parameters": [
+            "non_trainable_params: 0",
+            "shuffle: True",
+            "verbose: False",
+            "epochs: 10",
+            "seed: False",
+            "optimizer: adam",
+            "weight_decay: 0.0005",
+            "conv_bool: False",
+            "backend: theano",
+            "train_bool: True",
+            "noise_factor: 0.0",
+            "type_bool: False",
+            "home_dir: .",
+            "activation: relu",
+            "save_path: None",
+            "molecular_nonlinearity: elu",
+            "save: save",
+            "base_memo: None",
+            "num_hidden: [512, 32]",
+            "total_params: 37425824",
+            "config_file: /Users/karande1/Benchmarks/Pilot2/P2B1/p2b1_default_model.txt",
+            "learning_rate: 0.01",
+            "molecular_epochs: 1",
+            "batch_size: 32",
+            "gpus: []",
+            "molecular_num_hidden: [54, 12]",
+            "logfile: None",
+            "cool: False",
+            "case: CenterZ",
+            "loss: mse",
+            "set_sel: 3k_Disordered",
+            "datatype: <type 'numpy.float32'>",
+            "trainable_params: 37425824",
+            "weight_path: None",
+            "molecular_nbrs: 10",
+            "fig_bool: False"
+        ],
+        "experiment_id": "EXP_default",
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Running"
+        },
+        "training_loss": {
+            "set": 0.047548713750745118
+        },
+        "run_progress": {
+            "add": [
+                "epoch: 1/10, duration: 0.381742s, loss: 0.0475487137507, val_loss: None"
+            ]
+        },
+        "validation_loss": {
+            "set": null
+        },
+        "run_id": "RUN_default"
+    },
+    {
+        "status": {
+            "set": "Finished"
+        },
+        "date_modified": {
+            "set": "NOW"
+        },
+        "end_time": {
+            "set": "2017-10-25 15:17:26.901914"
+        },
+        "runtime_hours": {
+            "set": 0.00010613916666666667
+        },
+        "run_id": "RUN_default"
+    }
+]
