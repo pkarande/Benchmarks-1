@@ -9,7 +9,7 @@ def get_local_files(data_dir="/Users/karande1/Benchmarks/Pilot2/common/generate_
 
     data_files = glob.glob('%s/*.npz' % data_dir)
     filelist = [d for d in data_files if 'AE' not in d]
-
+    filelist = sorted(filelist)	
     import pilot2_datasets as p2
     fields = p2.gen_data_set_dict()
 

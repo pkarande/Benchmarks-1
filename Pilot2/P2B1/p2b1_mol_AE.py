@@ -1,11 +1,11 @@
-
 from __future__ import absolute_import
 from __future__ import print_function
-# import matplotlib
-# if 'MACOSX' in matplotlib.get_backend().upper():
-#   matplotlib.use('TKAgg')
-# import pylab as py
-# py.ion() ## Turn on plot visualization
+
+#import matplotlib
+#if 'MACOSX' in matplotlib.get_backend().upper():
+#  matplotlib.use('TKAgg')
+#import pylab as py
+#py.ion() ## Turn on plot visualization
 
 import gzip, pickle
 import numpy as np
@@ -201,20 +201,25 @@ class ImageNoiseDataGenerator(object):
         return np.random.binomial(1,1-corruption_level,x.shape)*x
 
 
-def conv_dense_mol_auto(mol_filters, mol_k_size=12, weights_path=None, input_shape=(1, 784),
+def conv_dense_mol_auto(bead_k_size=20, mol_k_size=12, weights_path=None, input_shape=(1, 784),
                         hidden_layers=None, nonlinearity='relu', l2_reg=0.0):
-    mol_kernel_size = mol_k_size
+
     input_img = Input(shape=input_shape)
 
     if hidden_layers!=None:
 
-        encoded = Convolution1D(mol_filters, mol_kernel_size, strides=mol_kernel_size, padding='same', activation=nonlinearity,
-                                kernel_regularizer=l2(l2_reg))(input_img)
-        encoded = Flatten()(encoded)
         if type(hidden_layers) != list:
             hidden_layers = list(hidden_layers)
         for i, l in enumerate(hidden_layers):
-            encoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg))(encoded)
+            if i == 0:
+                encoded = Convolution2D(l, bead_k_size, strides=(1, bead_k_size), padding='same', activation=nonlinearity,
+                                        input_shape=input_shape, kernel_regularizer=l2(l2_reg))(input_img)
+            elif i == 1:
+                encoded = Convolution2D(l, mol_k_size, strides=(1, mol_k_size), padding='same', activation=nonlinearity,
+                                        kernel_regularizer=l2(l2_reg))(encoded)
+                encoded = Flatten()(encoded)
+            else:
+                encoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg))(encoded)
 
         for i, l in reversed(list(enumerate(hidden_layers))):
             if i < len(hidden_layers)-1:
@@ -233,7 +238,6 @@ def conv_dense_mol_auto(mol_filters, mol_k_size=12, weights_path=None, input_sha
         print('Loading Model')
         model.load_weights(weights_path)
     return model
-
 
 def conv_dense_auto(weights_path=None,input_shape=(1,784),hidden_layers=None,nonlinearity='relu',l2_reg=0.0):
     kernel_size=7
@@ -440,11 +444,11 @@ class Candle_Molecular_Train():
 
         # normalizing the location coordinates and bond lengths and scale type encoding
         if self.type_feature:
-            Xnorm = np.concatenate([X_all[:, :, :, 0:3]/255., X_all[:, :, :, 3:8], X_all[:, :, :, 8:]/10.], axis=3)
+            Xnorm = np.concatenate([X_all[:, :, :, 0:3]/350., X_all[:, :, :, 3:8], X_all[:, :, :, 8:]/10.], axis=3)
 
         # only consider the location coordinates and bond lengths per molecule
         else:
-            Xnorm = np.concatenate([X_all[:, :, :, 0:3]/255., X_all[:, :, :, 8:]/10.], axis=3)
+            Xnorm = np.concatenate([X_all[:, :, :, 0:3]/350., X_all[:, :, :, 8:]/10.], axis=3)
 
         num_frames = X_all.shape[0]
         input_feature_dim = np.prod(Xnorm.shape[2:])
@@ -459,13 +463,14 @@ class Candle_Molecular_Train():
                 xt = helper.append_nbrs(xt, nbrs_all[i], self.molecular_nbrs)
 
                 yt = xt.copy()
-                xt = xt.reshape(xt.shape[0], 1, xt.shape[1])
+                xt = xt.reshape(xt.shape[0], 1, xt.shape[1], 1)
 
             else:
                 xt = Xnorm[i].reshape(X_all.shape[1], input_feature_dim)
                 xt = helper.append_nbrs(xt, nbrs_all[i], self.molecular_nbrs)
 
                 yt = xt.copy()
+
             if not len(xt_all):
                 xt_all = np.expand_dims(xt, axis=0)
                 yt_all = np.expand_dims(yt, axis=0)
@@ -473,14 +478,15 @@ class Candle_Molecular_Train():
                 xt_all = np.append(xt_all, np.expand_dims(xt, axis=0), axis=0)
                 yt_all = np.append(yt_all, np.expand_dims(yt, axis=0), axis=0)
 
-    return xt_all, yt_all
+        return xt_all, yt_all
 
     def datagen(self, epoch=0, print_out=1):
         X_all = np.array([])
         nbrs_all = np.array([])
         resnums_all = np.array([])
         files = self.numpylist
-        order = range(len(files))
+	# Training only on few files
+        order = range(10, 18)
         # Randomize files after first training epoch
         if epoch:
             order = np.random.permutation(order)
@@ -492,12 +498,13 @@ class Candle_Molecular_Train():
             (X, nbrs, resnums) = helper.get_data_arrays(files[f_ind])
 
             # normalizing the location coordinates and bond lengths and scale type encoding
+	    # Changed the xyz normalization from 255 to 350
             if self.type_feature:
-                Xnorm = np.concatenate([X[:, :, :, 0:3]/255., X[:, :, :, 3:8], X[:, :, :, 8:]/10.], axis=3)
+                Xnorm = np.concatenate([X[:, :, :, 0:3]/350., X[:, :, :, 3:8], X[:, :, :, 8:]/10.], axis=3)
 
             # only consider the location coordinates and bond lengths per molecule
             else:
-                Xnorm = np.concatenate([X[:, :, :, 0:3]/255., X[:, :, :, 8:]/10.], axis=3)
+                Xnorm = np.concatenate([X[:, :, :, 0:3]/350., X[:, :, :, 8:]/10.], axis=3)
 
             num_frames = X.shape[0]
             input_feature_dim = np.prod(Xnorm.shape[2:])
@@ -512,7 +519,7 @@ class Candle_Molecular_Train():
                     xt = helper.append_nbrs(xt, nbrs[i], self.molecular_nbrs)
 
                     yt = xt.copy()
-                    xt = xt.reshape(xt.shape[0], 1, xt.shape[1])
+                    xt = xt.reshape(xt.shape[0], 1, xt.shape[1], 1)
 
                 else:
                     xt = Xnorm[i].reshape(X.shape[1], input_feature_dim)
@@ -527,17 +534,17 @@ class Candle_Molecular_Train():
                     xt_all = np.append(xt_all, np.expand_dims(xt, axis=0), axis=0)
                     yt_all = np.append(yt_all, np.expand_dims(yt, axis=0), axis=0)
 
-            yield xt_all, yt_all
+            yield files[f_ind], xt_all, yt_all
 
         return
 
     def train_ac(self):
-        frame_loss = []
-        frame_mse = []
-        XP = []
-        for i in range(self.mb_epochs):
+
+	for i in range(self.mb_epochs):
             print ("\nTraining epoch: {:d}\n".format(i))
-            for xt_all, yt_all in self.datagen(i):
+            frame_loss = []
+            frame_mse = []
+            for curr_file, xt_all, yt_all in self.datagen(i):
                 for frame in range(len(xt_all)):
 
                     history = self.molecular_model.fit(xt_all[frame], yt_all[frame], epochs=1,
@@ -545,19 +552,28 @@ class Candle_Molecular_Train():
                                                        verbose=0)
                     frame_loss.append(history.history['loss'])
                     frame_mse.append(history.history['mean_squared_error'])
-                    if not frame % 20:
+                    
+		    if not frame % 20:
                         print ("Frame: {0:d}, Current history:\nLoss: {1:3.5f}\tMSE: {2:3.5f}\n"
                                .format(frame, history.history['loss'][0], history.history['mean_squared_error'][0]))
+            
+            os.makedirs(self.save_path+'/epoch_'+str(i))
+            current_path = self.save_path+'epoch_'+str(i)
+            np.save(current_path+'/loss.npy', frame_loss)
+            np.save(current_path+'/mse.npy', frame_mse)
+            print ("Saving latent space output for current epoch... \n")
 
-            for xt_all, yt_all in self.datagen(0, 0):
+            for curr_file, xt_all, yt_all in self.datagen(0, 0):
+                XP = []
                 for frame in range(len(xt_all)):
-                    yp = get_activations(self.molecular_model, self.len_molecular_hidden_layers, xt_all[frame])
+		    # get latent space activation output, +1 to incorporate the flatten layer
+                    yp = get_activations(self.molecular_model, self.len_molecular_hidden_layers + 1, xt_all[frame])
                     XP.append(yp)
 
-            XP = np.array(XP)
-            fout = self.save_path + self.numpylist[0].split('/')[-1].split('_chunk')[0]+'_AE'+'_Include%s' % self.type_feature+'_Conv%s' % self.conv_net+ '_epoch_%s' % str(i)+'.npy'
-
-            np.save(fout, XP)
+                XP = np.array(XP)
+                fout = current_path+'/'+curr_file.split('/')[-1].split('.npz')[0]+'_AE'+'_Include%s' % self.type_feature+'_Conv%s' % self.conv_net+'.npy'
+                print (fout)
+                np.save(fout, XP)
 
         return frame_loss, frame_mse
 
