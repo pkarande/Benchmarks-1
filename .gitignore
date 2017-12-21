@@ -10,3 +10,7 @@ Data/
 3k_*
 Pilot2/P2B1/fromRAY/
 Pilot2/P2B1/moleAE_results/
+*.out
+*.npy
+*.npz
+Pilot2/P2B1/molecular_AE_results/
