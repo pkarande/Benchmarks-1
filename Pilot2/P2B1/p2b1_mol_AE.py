@@ -212,32 +212,50 @@ def conv_dense_mol_auto(bead_k_size=20, mol_k_size=12, weights_path=None, input_
             hidden_layers = list(hidden_layers)
         for i, l in enumerate(hidden_layers):
             if i == 0:
-                encoded = Convolution2D(l, bead_k_size, strides=(1, bead_k_size), padding='same', activation=nonlinearity,
-                                        input_shape=input_shape, kernel_regularizer=l2(l2_reg))(input_img)
+                encoded = Convolution2D(l, bead_k_size, strides=(1, bead_k_size), padding='same',
+                                        activation=nonlinearity, input_shape=input_shape,
+                                        kernel_regularizer=l2(l2_reg),
+                                        kernel_initializer='glorot_normal')(input_img)
+                encoded = Dropout(0.75)(encoded)
+                encoded = BatchNormalization()(encoded)
             elif i == 1:
-                encoded = Convolution2D(l, mol_k_size, strides=(1, mol_k_size), padding='same', activation=nonlinearity,
-                                        kernel_regularizer=l2(l2_reg))(encoded)
+                encoded = Convolution2D(l, mol_k_size, strides=(1, mol_k_size), padding='same',
+                                        activation=nonlinearity, kernel_regularizer=l2(l2_reg),
+                                        kernel_initializer='glorot_normal')(encoded)
+                encoded = Dropout(0.75)(encoded)
+                encoded = BatchNormalization()(encoded)
                 encoded = Flatten()(encoded)
             else:
-                encoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg))(encoded)
+                encoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg),
+                                kernel_initializer='glorot_normal')(encoded)
+                encoded = Dropout(0.75)(encoded)
+                encoded = BatchNormalization()(encoded)
 
         for i, l in reversed(list(enumerate(hidden_layers))):
             if i < len(hidden_layers)-1:
                 if i == len(hidden_layers)-2:
-                    decoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg))(encoded)
+                    decoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg),
+                                    kernel_initializer='glorot_normal')(encoded)
+                    decoded = Dropout(0.75)(decoded)
+                    decoded = BatchNormalization()(decoded)
                 else:
-                    decoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg))(decoded)
-        decoded = Dense(input_shape[1], kernel_regularizer=l2(l2_reg))(decoded)
+                    decoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg),
+                                    kernel_initializer='glorot_normal')(decoded)
+                    decoded = Dropout(0.75)(decoded)
+                    decoded = BatchNormalization()(decoded)
+        decoded = Dense(input_shape[1], kernel_regularizer=l2(l2_reg),
+                        kernel_initializer='glorot_normal')(decoded)
 
     else:
         decoded = Dense(input_shape[1], kernel_regularizer=l2(l2_reg))(input_img)
 
     model = Model(inputs=input_img, outputs=decoded)
+    encoder = Model(inputs=input_img, outputs=encoded)
 
     if weights_path:
         print('Loading Model')
         model.load_weights(weights_path)
-    return model
+    return model, encoder
 
 def conv_dense_auto(weights_path=None,input_shape=(1,784),hidden_layers=None,nonlinearity='relu',l2_reg=0.0):
     kernel_size=7
@@ -552,11 +570,11 @@ class Candle_Molecular_Train():
                                                        verbose=0)
                     frame_loss.append(history.history['loss'])
                     frame_mse.append(history.history['mean_squared_error'])
-                    
+
 		    if not frame % 20:
                         print ("Frame: {0:d}, Current history:\nLoss: {1:3.5f}\tMSE: {2:3.5f}\n"
                                .format(frame, history.history['loss'][0], history.history['mean_squared_error'][0]))
-            
+
             os.makedirs(self.save_path+'/epoch_'+str(i))
             current_path = self.save_path+'epoch_'+str(i)
             np.save(current_path+'/loss.npy', frame_loss)
