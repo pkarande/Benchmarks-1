@@ -167,7 +167,7 @@ def run(GP):
     conv_bool = GP['conv_bool']
     if conv_bool:
         print ('Molecular kernel size: ', mol_kernel_size)
-        molecular_model = hf.conv_dense_mol_auto(bead_k_size=bead_kernel_size, mol_k_size=mol_kernel_size,
+        molecular_model, molecular_encoder = hf.conv_dense_mol_auto(bead_k_size=bead_kernel_size, mol_k_size=mol_kernel_size,
                                                  weights_path=None, input_shape=(1, molecular_input_dim, 1),
                                                  nonlinearity=molecular_nonlinearity,
                                                  hidden_layers=molecular_hidden_layers, l2_reg=GP['weight_decay'])
@@ -203,7 +203,7 @@ def run(GP):
     if GP['train_bool']:
         if not str2bool(GP['cool']):
             effec_epochs = GP['epochs']
-            ct = hf.Candle_Molecular_Train(molecular_model, data_files, mb_epochs, callbacks,
+            ct = hf.Candle_Molecular_Train(molecular_model, molecular_encoder, data_files, mb_epochs, callbacks,
                                            batch_size=32, case=GP['case'], save_path=GP['save_path'],
                                            len_molecular_hidden_layers=len_molecular_hidden_layers,
                                            molecular_nbrs=molecular_nbrs,
