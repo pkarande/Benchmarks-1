@@ -425,11 +425,12 @@ class Candle_Train():
 
 
 class Candle_Molecular_Train():
-    def __init__(self, molecular_ammodel, numpylist, mnb_epochs, callbacks, save_path='.', batch_size=32, case='Full',
+    def __init__(self, molecular_ammodel, molecular_encoder, numpylist, mnb_epochs, callbacks, save_path='.', batch_size=32, case='Full',
                  print_data=True, epsilon=.064, len_molecular_hidden_layers=1, molecular_nbrs=0,
                  conv_bool=False, type_bool=False):
         self.numpylist = numpylist
         self.molecular_model = molecular_ammodel
+        self.molecular_encoder = molecular_encoder
         self.mb_epochs = mnb_epochs
         self.callbacks = callbacks
         self.case = case
@@ -503,7 +504,7 @@ class Candle_Molecular_Train():
         nbrs_all = np.array([])
         resnums_all = np.array([])
         files = self.numpylist
-	# Training only on few files
+    # Training only on few files
         order = range(10, 18)
         # Randomize files after first training epoch
         if epoch:
@@ -516,7 +517,7 @@ class Candle_Molecular_Train():
             (X, nbrs, resnums) = helper.get_data_arrays(files[f_ind])
 
             # normalizing the location coordinates and bond lengths and scale type encoding
-	    # Changed the xyz normalization from 255 to 350
+        # Changed the xyz normalization from 255 to 350
             if self.type_feature:
                 Xnorm = np.concatenate([X[:, :, :, 0:3]/350., X[:, :, :, 3:8], X[:, :, :, 8:]/10.], axis=3)
 
@@ -558,7 +559,7 @@ class Candle_Molecular_Train():
 
     def train_ac(self):
 
-	for i in range(self.mb_epochs):
+        for i in range(self.mb_epochs):
             print ("\nTraining epoch: {:d}\n".format(i))
             frame_loss = []
             frame_mse = []
@@ -567,11 +568,11 @@ class Candle_Molecular_Train():
 
                     history = self.molecular_model.fit(xt_all[frame], yt_all[frame], epochs=1,
                                                        batch_size=self.batch_size, callbacks=self.callbacks[:2],
-                                                       verbose=0)
+                                                       verbose=1)
                     frame_loss.append(history.history['loss'])
                     frame_mse.append(history.history['mean_squared_error'])
 
-		    if not frame % 20:
+            if not frame % 20:
                         print ("Frame: {0:d}, Current history:\nLoss: {1:3.5f}\tMSE: {2:3.5f}\n"
                                .format(frame, history.history['loss'][0], history.history['mean_squared_error'][0]))
 
@@ -584,8 +585,9 @@ class Candle_Molecular_Train():
             for curr_file, xt_all, yt_all in self.datagen(0, 0):
                 XP = []
                 for frame in range(len(xt_all)):
-		    # get latent space activation output, +1 to incorporate the flatten layer
-                    yp = get_activations(self.molecular_model, self.len_molecular_hidden_layers + 1, xt_all[frame])
+                    # get latent space activation output, +1 to incorporate the flatten layer
+                    # yp = get_activations(self.molecular_model, self.len_molecular_hidden_layers + 1, xt_all[frame])
+                    yp = self.molecular_encoder.predict(xt_all[frame], batch_size=self.batch_size)
                     XP.append(yp)
 
                 XP = np.array(XP)
