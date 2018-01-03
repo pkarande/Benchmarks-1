@@ -531,7 +531,7 @@ class Candle_Molecular_Train():
             xt_all = np.array([])
             yt_all = np.array([])
 
-            for i in range(num_frames):
+            for i in range(30):  #num_frames):
 
                 if self.conv_net:
                     xt = Xnorm[i].reshape(X.shape[1], input_feature_dim)
@@ -568,7 +568,7 @@ class Candle_Molecular_Train():
 
                     history = self.molecular_model.fit(xt_all[frame], yt_all[frame], epochs=1,
                                                        batch_size=self.batch_size, callbacks=self.callbacks[:2],
-                                                       verbose=1)
+                                                       verbose=2)
                     frame_loss.append(history.history['loss'])
                     frame_mse.append(history.history['mean_squared_error'])
 
