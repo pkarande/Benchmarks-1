@@ -19,7 +19,7 @@ from keras.layers.convolutional import Convolution2D, MaxPooling2D,Convolution1D
 #from keras.layers.convolutional import ZeroPadding2D,UpSampling2D,Unpooling2D,perforated_Unpooling2D,DePool2D
 from keras.initializers import normal, identity, he_normal,glorot_normal,glorot_uniform,he_uniform
 from keras.layers.normalization import BatchNormalization
-from keras.regularizers import l2
+from keras.regularizers import l2, l1
 import threading
 try:
     import configparser
@@ -202,7 +202,7 @@ class ImageNoiseDataGenerator(object):
 
 
 def conv_dense_mol_auto(bead_k_size=20, mol_k_size=12, weights_path=None, input_shape=(1, 784),
-                        hidden_layers=None, nonlinearity='relu', l2_reg=0.0):
+                        hidden_layers=None, nonlinearity='relu', l2_reg=0.01):
 
     input_img = Input(shape=input_shape)
 
@@ -244,7 +244,7 @@ def conv_dense_mol_auto(bead_k_size=20, mol_k_size=12, weights_path=None, input_
                     decoded = Dropout(0.75)(decoded)
                     decoded = BatchNormalization()(decoded)
         decoded = Dense(input_shape[1], kernel_regularizer=l2(l2_reg),
-                        kernel_initializer='glorot_normal')(decoded)
+                        kernel_initializer='glorot_normal', activity_regularizer=l1(l2_reg))(decoded)
 
     else:
         decoded = Dense(input_shape[1], kernel_regularizer=l2(l2_reg))(input_img)
