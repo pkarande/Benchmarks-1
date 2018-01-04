@@ -202,7 +202,7 @@ class ImageNoiseDataGenerator(object):
 
 
 def conv_dense_mol_auto(bead_k_size=20, mol_k_size=12, weights_path=None, input_shape=(1, 784),
-                        hidden_layers=None, nonlinearity='relu', l2_reg=0.01):
+                        hidden_layers=None, nonlinearity='relu', l2_reg=0.01, drop=0.5):
 
     input_img = Input(shape=input_shape)
 
@@ -215,36 +215,36 @@ def conv_dense_mol_auto(bead_k_size=20, mol_k_size=12, weights_path=None, input_
                 encoded = Convolution2D(l, bead_k_size, strides=(1, bead_k_size), padding='same',
                                         activation=nonlinearity, input_shape=input_shape,
                                         kernel_regularizer=l2(l2_reg),
-                                        kernel_initializer='glorot_normal')(input_img)
-                encoded = Dropout(0.75)(encoded)
+                                        kernel_initializer='glorot_normal', use_bias=False)(input_img)
+                encoded = Dropout(drop)(encoded)
                 encoded = BatchNormalization()(encoded)
             elif i == 1:
                 encoded = Convolution2D(l, mol_k_size, strides=(1, mol_k_size), padding='same',
                                         activation=nonlinearity, kernel_regularizer=l2(l2_reg),
-                                        kernel_initializer='glorot_normal')(encoded)
-                encoded = Dropout(0.75)(encoded)
+                                        kernel_initializer='glorot_normal', use_bias=False)(encoded)
+                encoded = Dropout(drop)(encoded)
                 encoded = BatchNormalization()(encoded)
                 encoded = Flatten()(encoded)
             else:
                 encoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg),
-                                kernel_initializer='glorot_normal')(encoded)
-                encoded = Dropout(0.75)(encoded)
+                                kernel_initializer='glorot_normal', use_bias=False)(encoded)
+                encoded = Dropout(drop)(encoded)
                 encoded = BatchNormalization()(encoded)
 
         for i, l in reversed(list(enumerate(hidden_layers))):
             if i < len(hidden_layers)-1:
                 if i == len(hidden_layers)-2:
                     decoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg),
-                                    kernel_initializer='glorot_normal')(encoded)
-                    decoded = Dropout(0.75)(decoded)
+                                    kernel_initializer='glorot_normal', use_bias=False)(encoded)
+                    decoded = Dropout(drop)(decoded)
                     decoded = BatchNormalization()(decoded)
                 else:
                     decoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg),
-                                    kernel_initializer='glorot_normal')(decoded)
-                    decoded = Dropout(0.75)(decoded)
+                                    kernel_initializer='glorot_normal', use_bias=False)(decoded)
+                    decoded = Dropout(drop)(decoded)
                     decoded = BatchNormalization()(decoded)
         decoded = Dense(input_shape[1], activation=nonlinearity, kernel_regularizer=l2(l2_reg),
-                        kernel_initializer='glorot_normal', activity_regularizer=l1(l2_reg))(decoded)
+                        kernel_initializer='glorot_normal', use_bias=False)(decoded)
 
     else:
         decoded = Dense(input_shape[1], kernel_regularizer=l2(l2_reg))(input_img)

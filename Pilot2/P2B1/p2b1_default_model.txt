@@ -14,3 +14,4 @@ molecular_num_hidden=[256, 128, 64, 32, 16, 8]
 molecular_nbrs = 10
 molecular_epochs=10
 base_memo='p2b1'
+drop_prob = 0.5

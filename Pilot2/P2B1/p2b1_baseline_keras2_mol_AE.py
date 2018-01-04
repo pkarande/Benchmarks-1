@@ -168,16 +168,18 @@ def run(GP):
     if conv_bool:
         print ('Molecular kernel size: ', mol_kernel_size)
         molecular_model, molecular_encoder = hf.conv_dense_mol_auto(bead_k_size=bead_kernel_size, mol_k_size=mol_kernel_size,
-                                                 weights_path=None, input_shape=(1, molecular_input_dim, 1),
-                                                 nonlinearity=molecular_nonlinearity,
-                                                 hidden_layers=molecular_hidden_layers, l2_reg=GP['weight_decay'])
+                                                                    weights_path=None, input_shape=(1, molecular_input_dim, 1),
+                                                                    nonlinearity=molecular_nonlinearity,
+                                                                    hidden_layers=molecular_hidden_layers,
+                                                                    l2_reg=GP['weight_decay'],
+                                                                    drop=GP['drop_prob'])
     else:
         molecular_model = hf.dense_auto(weights_path=None, input_shape=(molecular_input_dim,),
                                         nonlinearity=molecular_nonlinearity,
                                         hidden_layers=molecular_hidden_layers,
                                         l2_reg=GP['weight_decay'])
 
-    molecular_model.compile(optimizer=opt, loss='mean_squared_error', metrics=['mean_squared_error'])
+    molecular_model.compile(optimizer=opt, loss=helper.combined_loss, metrics=['mean_squared_error', 'mean_absolute_error'])
     molecular_model.summary()
     ##### set up callbacks and cooling for the molecular_model ##########
     drop = 0.5
