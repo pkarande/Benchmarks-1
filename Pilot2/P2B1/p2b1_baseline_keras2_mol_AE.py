@@ -177,7 +177,7 @@ def run(GP):
                                         hidden_layers=molecular_hidden_layers,
                                         l2_reg=GP['weight_decay'])
 
-    molecular_model.compile(optimizer=opt, loss='mean_absolute_error', metrics=['mean_squared_error'])
+    molecular_model.compile(optimizer=opt, loss='mean_squared_error', metrics=['mean_squared_error'])
     molecular_model.summary()
     ##### set up callbacks and cooling for the molecular_model ##########
     drop = 0.5
