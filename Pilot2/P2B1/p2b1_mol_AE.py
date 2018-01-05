@@ -534,8 +534,8 @@ class Candle_Molecular_Train():
             for i in range(30):  #num_frames):
 
                 if self.conv_net:
-                    xt = Xnorm[i].reshape(X.shape[1], input_feature_dim)
-                    xt = helper.append_nbrs(xt, nbrs[i], self.molecular_nbrs)
+                    xt = Xnorm[i]
+                    xt = helper.append_nbrs_relative(xt, nbrs[i], self.molecular_nbrs)
 
                     yt = xt.copy()
                     xt = xt.reshape(xt.shape[0], 1, xt.shape[1], 1)
