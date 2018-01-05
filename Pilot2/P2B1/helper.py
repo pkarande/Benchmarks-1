@@ -5,7 +5,7 @@ from keras.losses import mean_absolute_error as mae
 
 
 def combined_loss(y_true, y_pred):
-    return mse(y_true, y_pred) + 0.01*mae(y_true, y_pred)
+    return mse(y_true, y_pred) + 0.01*mae(0, y_pred)
 
 
 def get_local_files(data_dir="/Users/karande1/Benchmarks/Pilot2/common/generate_datasets"):
