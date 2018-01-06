@@ -5,11 +5,16 @@ from keras.losses import mean_absolute_error as mae
 
 
 def combined_loss(y_true, y_pred):
+    '''
+    Uses a combination of mean_squared_error and an L1 penalty on the output of AE
+    '''
     return mse(y_true, y_pred) + 0.01*mae(0, y_pred)
 
 
 def periodicDistance(x0, x1, dimensions):
-
+    '''
+    Calculating periodic distances for the x, y, z dimensions
+    '''
     for i in range(len(dimensions)):
         delta = x0[:, :, i] - x1[i]
         delta = np.where(delta > 0.5 * dimensions[i], delta - dimensions[i], delta)
@@ -19,6 +24,10 @@ def periodicDistance(x0, x1, dimensions):
 
 
 def get_com(x):
+    '''
+    Calculating the Center of Mass of the molecule.
+    Using only the first 8 beads if the molecule is CHOL
+    '''
     if x[0, 3] == 1:
         return np.mean(x[:8, :3], axis=0)
     else:
@@ -51,18 +60,27 @@ def get_data_arrays(f):
 
 
 def append_nbrs_relative(x, nbrs, num_nbrs):
-
+    '''
+    Appends the neighbors to each molecule in the frame
+    Also, uses x, y, z positions relative to the center of mass of the molecule.
+    '''
     new_x_shape = np.array((x.shape[0], np.prod(x.shape[1:])))
     new_x_shape[1] *= num_nbrs+1
     x_wNbrs = np.zeros(new_x_shape)
 
     for i in range(len(x)):
+        # get neighbors
         nb_indices = nbrs[i, :num_nbrs+1].astype(int)
         nb_indices = nb_indices[nb_indices != -1]
         temp_mols = x[nb_indices]
+
+        # calculate com
         com = get_com(x[i])
 
-        temp_mols = periodicDistance(temp_mols, com, [1, 1, 0.3])
+        # Calculate relative periodic distances from the com
+        temp_mols = periodicDistance(temp_mols, com, [1., 1., 0.3])  # The absolute span of z-dimension is about third of x and y
+
+        # For the CHOL molecules set the last 4 beads to all zero
         ind = np.argwhere(temp_mols[:, 1, 3] == 1)
         temp_mols[ind, 8:, :] = 0
 
@@ -75,7 +93,9 @@ def append_nbrs_relative(x, nbrs, num_nbrs):
 
 
 def append_nbrs(x, nbrs, num_nbrs):
-
+    '''
+    Appends the neighbors to each molecule in the frame
+    '''
     new_x_shape = np.array(x.shape)
     new_x_shape[1] *= num_nbrs+1
     x_wNbrs = np.zeros(new_x_shape)
