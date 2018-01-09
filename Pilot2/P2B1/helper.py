@@ -19,7 +19,7 @@ def periodicDistance(x0, x1, dimensions):
         delta = x0[:, :, i] - x1[i]
         delta = np.where(delta > 0.5 * dimensions[i], delta - dimensions[i], delta)
         delta = np.where(delta < - (0.5 * dimensions[i]), delta + dimensions[i], delta)
-        x0[:, :, i] = delta
+        x0[:, :, i] = delta*4  # multiplier to rescale the values 
     return x0
 
 
