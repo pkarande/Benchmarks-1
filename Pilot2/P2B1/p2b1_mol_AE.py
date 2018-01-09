@@ -243,7 +243,7 @@ def conv_dense_mol_auto(bead_k_size=20, mol_k_size=12, weights_path=None, input_
                                     kernel_initializer='glorot_normal', use_bias=False)(decoded)
                     decoded = Dropout(drop)(decoded)
                     decoded = BatchNormalization()(decoded)
-        decoded = Dense(input_shape[1], activation=nonlinearity, kernel_regularizer=l2(l2_reg),
+        decoded = Dense(input_shape[1], activation='tanh', kernel_regularizer=l2(l2_reg),
                         kernel_initializer='glorot_normal', use_bias=False)(decoded)
 
     else:
