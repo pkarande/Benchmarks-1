@@ -463,11 +463,11 @@ class Candle_Molecular_Train():
 
         # normalizing the location coordinates and bond lengths and scale type encoding
         if self.type_feature:
-            Xnorm = np.concatenate([X_all[:, :, :, 0:3]/350., X_all[:, :, :, 3:8], X_all[:, :, :, 8:]/10.], axis=3)
+            Xnorm = np.concatenate([X_all[:, :, :, 0:3]/320., X_all[:, :, :, 3:8], X_all[:, :, :, 8:]/10.], axis=3)
 
         # only consider the location coordinates and bond lengths per molecule
         else:
-            Xnorm = np.concatenate([X_all[:, :, :, 0:3]/350., X_all[:, :, :, 8:]/10.], axis=3)
+            Xnorm = np.concatenate([X_all[:, :, :, 0:3]/320., X_all[:, :, :, 8:]/10.], axis=3)
 
         num_frames = X_all.shape[0]
         input_feature_dim = np.prod(Xnorm.shape[2:])
@@ -519,11 +519,11 @@ class Candle_Molecular_Train():
             # normalizing the location coordinates and bond lengths and scale type encoding
         # Changed the xyz normalization from 255 to 350
             if self.type_feature:
-                Xnorm = np.concatenate([X[:, :, :, 0:3]/350., X[:, :, :, 3:8], X[:, :, :, 8:]/10.], axis=3)
+                Xnorm = np.concatenate([X[:, :, :, 0:3]/320., X[:, :, :, 3:8], X[:, :, :, 8:]/10.], axis=3)
 
             # only consider the location coordinates and bond lengths per molecule
             else:
-                Xnorm = np.concatenate([X[:, :, :, 0:3]/350., X[:, :, :, 8:]/10.], axis=3)
+                Xnorm = np.concatenate([X[:, :, :, 0:3]/320., X[:, :, :, 8:]/10.], axis=3)
 
             num_frames = X.shape[0]
             input_feature_dim = np.prod(Xnorm.shape[2:])
