@@ -62,18 +62,28 @@ def p2b1_parser(parser):
 #    parser.add_argument("--train", action="store_true",dest="train_bool",default=True,help="Invoke training")
 #    parser.add_argument("--evaluate", action="store_true",dest="eval_bool",default=False,help="Use model for inference")
 #    parser.add_argument("--home-dir",help="Home Directory",dest="home_dir",type=str,default='.')
-    parser.add_argument("--save-dir",help="Save Directory",dest="save_path",type=str,default=None)
-    parser.add_argument("--config-file",help="Config File",dest="config_file",type=str,default=os.path.join(file_path, 'p2b1_small_model.txt'))
-    parser.add_argument("--model-file",help="Trained Model Pickle File",dest="weight_path",type=str,default=None)
-    parser.add_argument("--memo",help="Memo",dest="base_memo",type=str,default=None)
-    parser.add_argument("--seed", action="store_true",dest="seed",default=False,help="Random Seed")
-    parser.add_argument("--case",help="[Full, Center, CenterZ]",dest="case",type=str,default='CenterZ')
-    parser.add_argument("--fig", action="store_true",dest="fig_bool",default=False,help="Generate Prediction Figure")
-    parser.add_argument("--data-set",help="[3k_Disordered, 3k_Ordered, 3k_Ordered_and_gel, 6k_Disordered, 6k_Ordered, 6k_Ordered_and_gel]",dest="set_sel",
-        type=str,default="3k_Disordered")
-    parser.add_argument("--conv-AE", action="store_true",dest="conv_bool",default=False,help="Invoke training using Conv1D NN for inner AE")
-    parser.add_argument("--include-type", action="store_true",dest="type_bool",default=False,help="Include molecule type information in desining AE")
-    parser.add_argument("--backend",help="Keras Backend",dest="backend",type=str,default='theano')
+    parser.add_argument("--save-dir", help="Save Directory", dest="save_path", type=str, default=None)
+    parser.add_argument("--config-file", help="Config File", dest="config_file", type=str,
+                        default=os.path.join(file_path, 'p2b1_small_model.txt'))
+
+    parser.add_argument("--model-file", help="Trained Model Pickle File", dest="weight_path", type=str, default=None)
+    parser.add_argument("--memo", help="Memo", dest="base_memo", type=str, default=None)
+    parser.add_argument("--seed", action="store_true", dest="seed", default=False, help="Random Seed")
+    parser.add_argument("--case", help="[Full, Center, CenterZ]", dest="case", type=str, default='CenterZ')
+    parser.add_argument("--fig", action="store_true", dest="fig_bool", default=False, help="Generate Prediction Figure")
+    parser.add_argument("--data-set",  help="[3k_run16, 3k_run10, 3k_run32]", dest="set_sel",
+                        type=str, default="3k_run16")
+
+    parser.add_argument("--conv-AE", action="store_true", dest="conv_bool", default=False,
+                        help="Invoke training using 1D Convs for inner AE")
+
+    parser.add_argument("--full-conv-AE", action="store_true", dest="full_conv_bool", default=False,
+                        help="Invoke training using fully convolutional NN for inner AE")
+
+    parser.add_argument("--include-type", action="store_true", dest="type_bool", default=False,
+                        help="Include molecule type information in desining AE")
+
+    parser.add_argument("--backend", help="Keras Backend", dest="backend", type=str, default='theano')
     #(opts,args)=parser.parse_args()
     return parser
 
@@ -97,10 +107,11 @@ def read_config_file(File):
     # note 'cool' is a boolean
     Global_Params['cool']          =config.get(section[0],'cool')
 
-    Global_Params['molecular_epochs']       =eval(config.get(section[0],'molecular_epochs'))
-    Global_Params['molecular_num_hidden']   =eval(config.get(section[0],'molecular_num_hidden'))
-    Global_Params['molecular_nonlinearity'] =config.get(section[0],'molecular_nonlinearity')
-    Global_Params['molecular_nbrs'] =config.get(section[0],'molecular_nbrs')
+    Global_Params['molecular_epochs']       = eval(config.get(section[0],'molecular_epochs'))
+    Global_Params['molecular_num_hidden']   = eval(config.get(section[0],'molecular_num_hidden'))
+    Global_Params['molecular_nonlinearity'] = config.get(section[0],'molecular_nonlinearity')
+    Global_Params['molecular_nbrs'] = config.get(section[0],'molecular_nbrs')
+    Global_Params['drop_prob'] = config.get(section[0],'drop_prob')
 
     # parse the remaining values
     for k,v in config.items(section[0]):
@@ -199,159 +210,6 @@ class ImageNoiseDataGenerator(object):
 
     def insertnoise(self,x,corruption_level=0.5):
         return np.random.binomial(1,1-corruption_level,x.shape)*x
-
-
-def conv_dense_mol_auto(bead_k_size=20, mol_k_size=12, weights_path=None, input_shape=(1, 784),
-                        hidden_layers=None, nonlinearity='relu', l2_reg=0.01, drop=0.5):
-
-    input_img = Input(shape=input_shape)
-
-    if hidden_layers!=None:
-
-        if type(hidden_layers) != list:
-            hidden_layers = list(hidden_layers)
-        for i, l in enumerate(hidden_layers):
-            if i == 0:
-                encoded = Convolution2D(l, bead_k_size, strides=(1, bead_k_size), padding='same',
-                                        activation=nonlinearity, input_shape=input_shape,
-                                        kernel_regularizer=l2(l2_reg),
-                                        kernel_initializer='glorot_normal', use_bias=False)(input_img)
-                encoded = Dropout(drop)(encoded)
-                encoded = BatchNormalization()(encoded)
-            elif i == 1:
-                encoded = Convolution2D(l, mol_k_size, strides=(1, mol_k_size), padding='same',
-                                        activation=nonlinearity, kernel_regularizer=l2(l2_reg),
-                                        kernel_initializer='glorot_normal', use_bias=False)(encoded)
-                encoded = Dropout(drop)(encoded)
-                encoded = BatchNormalization()(encoded)
-                encoded = Flatten()(encoded)
-            else:
-                encoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg),
-                                kernel_initializer='glorot_normal', use_bias=False)(encoded)
-                encoded = Dropout(drop)(encoded)
-                encoded = BatchNormalization()(encoded)
-
-        for i, l in reversed(list(enumerate(hidden_layers))):
-            if i < len(hidden_layers)-1:
-                if i == len(hidden_layers)-2:
-                    decoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg),
-                                    kernel_initializer='glorot_normal', use_bias=False)(encoded)
-                    decoded = Dropout(drop)(decoded)
-                    decoded = BatchNormalization()(decoded)
-                else:
-                    decoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg),
-                                    kernel_initializer='glorot_normal', use_bias=False)(decoded)
-                    decoded = Dropout(drop)(decoded)
-                    decoded = BatchNormalization()(decoded)
-        decoded = Dense(input_shape[1], activation='tanh', kernel_regularizer=l2(l2_reg),
-                        kernel_initializer='glorot_normal', use_bias=False)(decoded)
-
-    else:
-        decoded = Dense(input_shape[1], kernel_regularizer=l2(l2_reg))(input_img)
-
-    model = Model(inputs=input_img, outputs=decoded)
-    encoder = Model(inputs=input_img, outputs=encoded)
-
-    if weights_path:
-        print('Loading Model')
-        model.load_weights(weights_path)
-    return model, encoder
-
-def conv_dense_auto(weights_path=None,input_shape=(1,784),hidden_layers=None,nonlinearity='relu',l2_reg=0.0):
-    kernel_size=7
-    input_img = Input(shape=input_shape)
-
-    if hidden_layers!=None:
-        if type(hidden_layers)!=list:
-            hidden_layers=list(hidden_layers)
-        for i,l in enumerate(hidden_layers):
-            if i==0:
-                encoded=Convolution1D(l,kernel_size,padding='same',input_shape=input_shape,activation=nonlinearity,kernel_regularizer=l2(l2_reg))(input_img)
-            else:
-                encoded=Convolution1D(l,kernel_size,padding='same',input_shape=input_shape,activation=nonlinearity,kernel_regularizer=l2(l2_reg))(encoded)
-
-        encoded=Flatten()(encoded) ## reshape output of 1d convolution layer
-
-        for i,l in reversed(list(enumerate(hidden_layers))):
-            if i <len(hidden_layers)-1:
-                if i==len(hidden_layers)-2:
-                    decoded=Dense(l,activation=nonlinearity,kernel_regularizer=l2(l2_reg))(encoded)
-                else:
-                    decoded=Dense(l,activation=nonlinearity,kernel_regularizer=l2(l2_reg))(decoded)
-        decoded=Dense(input_shape[1],kernel_regularizer=l2(l2_reg))(decoded)
-
-    else:
-        decoded=Dense(input_shape[1],kernel_regularizer=l2(l2_reg))(input_img)
-
-    model=Model(inputs=input_img,outputs=decoded)
-
-    if weights_path:
-        print('Loading Model')
-        model.load_weights(weights_path)
-    return model
-
-##### Define Neural Network Models ###################
-def dense_auto(weights_path=None,input_shape=(784,),hidden_layers=None,nonlinearity='relu',l2_reg=0.0):
-    input_img = Input(shape=input_shape)
-
-    if hidden_layers!=None:
-        if type(hidden_layers)!=list:
-            hidden_layers=list(hidden_layers)
-        for i,l in enumerate(hidden_layers):
-            if i==0:
-                encoded=Dense(l,activation=nonlinearity,kernel_regularizer=l2(l2_reg))(input_img)
-            else:
-                encoded=Dense(l,activation=nonlinearity,kernel_regularizer=l2(l2_reg))(encoded)
-
-        for i,l in reversed(list(enumerate(hidden_layers))):
-            if i <len(hidden_layers)-1:
-                if i==len(hidden_layers)-2:
-                    decoded=Dense(l,activation=nonlinearity,kernel_regularizer=l2(l2_reg))(encoded)
-                else:
-                    decoded=Dense(l,activation=nonlinearity,kernel_regularizer=l2(l2_reg))(decoded)
-        decoded=Dense(input_shape[0],kernel_regularizer=l2(l2_reg))(decoded)
-    else:
-        decoded=Dense(input_shape[0],kernel_regularizer=l2(l2_reg))(input_img)
-
-    model=Model(outputs=decoded,inputs=input_img)
-
-    if weights_path:
-        print('Loading Model')
-        model.load_weights(weights_path)
-    return model
-
-def dense_simple(weights_path=None,input_shape=(784,),nonlinearity='relu'):
-    model=Sequential()
-    ## encoder
-    model.add(Dense(512,input_shape=input_shape,activation=nonlinearity))
-    BatchNormalization()
-    model.add(Dense(256,activation=nonlinearity))
-    BatchNormalization()
-    model.add(Dense(128,activation=nonlinearity))
-    BatchNormalization()
-    model.add(Dense(64,activation=nonlinearity))
-    BatchNormalization()
-    model.add(Dense(32,activation=nonlinearity))
-    BatchNormalization()
-    model.add(Dense(16,activation=nonlinearity))
-    BatchNormalization()
-    ## decoder
-    model.add(Dense(32))
-    BatchNormalization()
-    model.add(Dense(64))
-    BatchNormalization()
-    model.add(Dense(128))
-    BatchNormalization()
-    model.add(Dense(256))
-    BatchNormalization()
-    model.add(Dense(512))
-    BatchNormalization()
-    model.add(Dense(input_shape[0],activation='linear'))
-    if weights_path:
-        print('Loading Model')
-        model.load_weights(weights_path)
-    return model
-
 
 class autoencoder_preprocess():
     def __init__(self,img_size=(784,),noise_factor=0.):
@@ -561,8 +419,14 @@ class Candle_Molecular_Train():
 
         for i in range(self.mb_epochs):
             print ("\nTraining epoch: {:d}\n".format(i))
+
             frame_loss = []
             frame_mse = []
+
+            os.makedirs(self.save_path+'/epoch_'+str(i))
+            current_path = self.save_path+'epoch_'+str(i)
+            model_weight_file = '%s/%s.hdf5' % (current_path, 'model_weights')
+
             for curr_file, xt_all, yt_all in self.datagen(i):
                 for frame in range(len(xt_all)):
 
@@ -576,15 +440,17 @@ class Candle_Molecular_Train():
                         print ("Frame: {0:d}, Current history:\nLoss: {1:3.5f}\tMSE: {2:3.5f}\n"
                                .format(frame, history.history['loss'][0], history.history['mean_squared_error'][0]))
 
-            os.makedirs(self.save_path+'/epoch_'+str(i))
-            current_path = self.save_path+'epoch_'+str(i)
+                        # Update weights file every few frames
+                        self.molecular_model.save_weights(model_weight_file)
+
+            # save Loss and mse
+            print ("\nSaving loss and mse after current epoch... \n")
             np.save(current_path+'/loss.npy', frame_loss)
             np.save(current_path+'/mse.npy', frame_mse)
-            
-            print ("\nSaving weights after current epoch... \n")
-            model_weight_file = '%s/%s.hdf5' % (current_path, 'model_weights')
+
+            # Update weights file
             self.molecular_model.save_weights(model_weight_file)
-            
+
             print ("\nSaving latent space output for current epoch... \n")
 
             for curr_file, xt_all, yt_all in self.datagen(0, 0):

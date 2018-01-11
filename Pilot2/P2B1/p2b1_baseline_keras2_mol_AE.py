@@ -106,7 +106,7 @@ def run(GP):
 
     # Read from local directoy
     import helper
-    (data_files, fields) = helper.get_local_files('/p/gscratchr/brainusr/datasets/cancer/pilot2/3k_run16_10us.35fs-DPPC.20-DIPC.60-CHOL.20.dir/')
+    (data_files, fields) = helper.get_local_files('3k_run16')
 
     # Define datagenerator
     datagen = hf.ImageNoiseDataGenerator(corruption_level=GP['noise_factor'])
@@ -166,14 +166,22 @@ def run(GP):
 
     len_molecular_hidden_layers = len(molecular_hidden_layers)
     conv_bool = GP['conv_bool']
+    full_conv_bool = GP['full_conv_bool']
     if conv_bool:
-        print ('Molecular kernel size: ', mol_kernel_size)
         molecular_model, molecular_encoder = hf.conv_dense_mol_auto(bead_k_size=bead_kernel_size, mol_k_size=mol_kernel_size,
                                                                     weights_path=None, input_shape=(1, molecular_input_dim, 1),
                                                                     nonlinearity=molecular_nonlinearity,
                                                                     hidden_layers=molecular_hidden_layers,
                                                                     l2_reg=GP['weight_decay'],
                                                                     drop=GP['drop_prob'])
+    elif full_conv_bool:
+        molecular_model, molecular_encoder = hf.conv_dense_mol_auto(bead_k_size=bead_kernel_size, mol_k_size=mol_kernel_size,
+                                                                    weights_path=None, input_shape=(1, molecular_input_dim, 1),
+                                                                    nonlinearity=molecular_nonlinearity,
+                                                                    hidden_layers=molecular_hidden_layers,
+                                                                    l2_reg=GP['weight_decay'],
+                                                                    drop=GP['drop_prob'])
+
     else:
         molecular_model = hf.dense_auto(weights_path=None, input_shape=(molecular_input_dim,),
                                         nonlinearity=molecular_nonlinearity,
@@ -209,7 +217,7 @@ def run(GP):
 
         model_json = molecular_model.to_json()
         with open(GP['save_path'] + '/model.json', "w") as json_file:
-            json_file.write(model_json) 
+            json_file.write(model_json)
         print('Saved model to disk')
 
 #### Train the Model

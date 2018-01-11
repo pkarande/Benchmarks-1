@@ -19,7 +19,7 @@ def periodicDistance(x0, x1, dimensions):
         delta = x0[:, :, i] - x1[i]
         delta = np.where(delta > 0.5 * dimensions[i], delta - dimensions[i], delta)
         delta = np.where(delta < - (0.5 * dimensions[i]), delta + dimensions[i], delta)
-        x0[:, :, i] = delta*4  # multiplier to rescale the values 
+        x0[:, :, i] = delta*4  # multiplier to rescale the values
     return x0
 
 
@@ -34,10 +34,16 @@ def get_com(x):
         return np.mean(x[:, :3], axis=0)
 
 
-def get_local_files(data_dir="/Users/karande1/Benchmarks/Pilot2/common/generate_datasets"):
+def get_local_files(data_tag="3k_run16"):
     '''
     Load data files from local directory
     '''
+    if data_tag == '3k_run16':
+        data_dir = '/p/gscratchr/brainusr/datasets/cancer/pilot2/3k_run16_10us.35fs-DPPC.20-DIPC.60-CHOL.20.dir/'
+    elif data_tag == '3k_run10':
+        data_dir = '/p/gscratchr/brainusr/datasets/cancer/pilot2/3k_run10_10us.35fs-DPPC.10-DOPC.70-CHOL.20.dir/'
+    elif data_tag == '3k_run32':
+        data_dir = '/p/gscratchr/brainusr/datasets/cancer/pilot2/3k_run32_10us.35fs-DPPC.50-DOPC.10-CHOL.40.dir/'
 
     data_files = glob.glob('%s/*.npz' % data_dir)
     filelist = [d for d in data_files if 'AE' not in d]
