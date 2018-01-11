@@ -21,6 +21,8 @@ import p2_common as p2c
 import p2_common_keras as p2ck
 from solr_keras import CandleRemoteMonitor, compute_trainable_params, TerminateOnTimeOut
 
+import p2b1_AE_models as AE_models
+
 HOME = os.environ['HOME']
 
 
@@ -168,25 +170,29 @@ def run(GP):
     conv_bool = GP['conv_bool']
     full_conv_bool = GP['full_conv_bool']
     if conv_bool:
-        molecular_model, molecular_encoder = hf.conv_dense_mol_auto(bead_k_size=bead_kernel_size, mol_k_size=mol_kernel_size,
-                                                                    weights_path=None, input_shape=(1, molecular_input_dim, 1),
-                                                                    nonlinearity=molecular_nonlinearity,
-                                                                    hidden_layers=molecular_hidden_layers,
-                                                                    l2_reg=GP['weight_decay'],
-                                                                    drop=GP['drop_prob'])
+        molecular_model, molecular_encoder = AE_models.conv_dense_mol_auto(bead_k_size=bead_kernel_size,
+                                                                           mol_k_size=mol_kernel_size,
+                                                                           weights_path=None,
+                                                                           input_shape=(1, molecular_input_dim, 1),
+                                                                           nonlinearity=molecular_nonlinearity,
+                                                                           hidden_layers=molecular_hidden_layers,
+                                                                           l2_reg=GP['weight_decay'],
+                                                                           drop=GP['drop_prob'])
     elif full_conv_bool:
-        molecular_model, molecular_encoder = hf.conv_dense_mol_auto(bead_k_size=bead_kernel_size, mol_k_size=mol_kernel_size,
-                                                                    weights_path=None, input_shape=(1, molecular_input_dim, 1),
-                                                                    nonlinearity=molecular_nonlinearity,
-                                                                    hidden_layers=molecular_hidden_layers,
-                                                                    l2_reg=GP['weight_decay'],
-                                                                    drop=GP['drop_prob'])
+        molecular_model, molecular_encoder = AE_models.full_dense_mol_auto(bead_k_size=bead_kernel_size,
+                                                                           mol_k_size=mol_kernel_size,
+                                                                           weights_path=None,
+                                                                           input_shape=(1, molecular_input_dim, 1),
+                                                                           nonlinearity=molecular_nonlinearity,
+                                                                           hidden_layers=molecular_hidden_layers,
+                                                                           l2_reg=GP['weight_decay'],
+                                                                           drop=GP['drop_prob'])
 
     else:
-        molecular_model = hf.dense_auto(weights_path=None, input_shape=(molecular_input_dim,),
-                                        nonlinearity=molecular_nonlinearity,
-                                        hidden_layers=molecular_hidden_layers,
-                                        l2_reg=GP['weight_decay'])
+        molecular_model = AE_models.dense_auto(weights_path=None, input_shape=(molecular_input_dim,),
+                                               nonlinearity=molecular_nonlinearity,
+                                               hidden_layers=molecular_hidden_layers,
+                                               l2_reg=GP['weight_decay'])
 
     molecular_model.compile(optimizer=opt, loss=helper.combined_loss, metrics=['mean_squared_error', 'mean_absolute_error'])
     molecular_model.summary()
