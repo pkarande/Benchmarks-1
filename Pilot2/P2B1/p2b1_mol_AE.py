@@ -505,7 +505,7 @@ class Candle_Molecular_Train():
         resnums_all = np.array([])
         files = self.numpylist
     # Training only on few files
-        order = range(10, 18)
+        order = range(13, 17)
         # Randomize files after first training epoch
         if epoch:
             order = np.random.permutation(order)
@@ -531,7 +531,7 @@ class Candle_Molecular_Train():
             xt_all = np.array([])
             yt_all = np.array([])
 
-            for i in range(30):  #num_frames):
+            for i in range(num_frames):
 
                 if self.conv_net:
                     xt = Xnorm[i]
@@ -568,11 +568,11 @@ class Candle_Molecular_Train():
 
                     history = self.molecular_model.fit(xt_all[frame], yt_all[frame], epochs=1,
                                                        batch_size=self.batch_size, callbacks=self.callbacks[:2],
-                                                       verbose=2)
+                                                       verbose=0)
                     frame_loss.append(history.history['loss'])
                     frame_mse.append(history.history['mean_squared_error'])
 
-            if not frame % 20:
+                    if not frame % 20:
                         print ("Frame: {0:d}, Current history:\nLoss: {1:3.5f}\tMSE: {2:3.5f}\n"
                                .format(frame, history.history['loss'][0], history.history['mean_squared_error'][0]))
 
@@ -580,7 +580,12 @@ class Candle_Molecular_Train():
             current_path = self.save_path+'epoch_'+str(i)
             np.save(current_path+'/loss.npy', frame_loss)
             np.save(current_path+'/mse.npy', frame_mse)
-            print ("Saving latent space output for current epoch... \n")
+            
+            print ("\nSaving weights after current epoch... \n")
+            model_weight_file = '%s/%s.hdf5' % (current_path, 'model_weights')
+            self.molecular_model.save_weights(model_weight_file)
+            
+            print ("\nSaving latent space output for current epoch... \n")
 
             for curr_file, xt_all, yt_all in self.datagen(0, 0):
                 XP = []

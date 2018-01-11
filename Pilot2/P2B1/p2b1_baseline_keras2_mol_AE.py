@@ -3,6 +3,7 @@ import scipy as sp
 import pickle
 import sys, os
 import argparse
+import h5py
 
 TIMEOUT = 3600  # in sec; set this to -1 for no timeout
 file_path = os.path.dirname(os.path.realpath(__file__))
@@ -201,6 +202,16 @@ def run(GP):
     callbacks = [history, candleRemoteMonitor, timeoutMonitor]
     loss = 0.
 
+#### Save the Model to disk
+    if GP['save_path'] != None:
+        if not os.path.exists(GP['save_path']):
+                os.makedirs(GP['save_path'])
+
+        model_json = molecular_model.to_json()
+        with open(GP['save_path'] + '/model.json', "w") as json_file:
+            json_file.write(model_json) 
+        print('Saved model to disk')
+
 #### Train the Model
     if GP['train_bool']:
         if not str2bool(GP['cool']):
@@ -224,17 +235,6 @@ def run(GP):
                     ct.print_data=False
                     print ('Cooling Learning Rate by factor of 10...')
                 loss.extend(ct.train_ac())
-
-        if False and GP['save_path'] != None:
-            if not os.path.exists(GP['save_path']):
-                os.makedirs(GP['save_path'])
-
-            loss_file = '%s/%s.pkl' % (GP['save_path'], memo)
-            model_file = '%s/%s.hdf5' % (GP['save_path'], memo)
-            o = open(loss_file, 'wb')
-            pickle.dump(loss, o)
-            o.close()
-            molecular_model.save_weights(model_file)
 
     return frame_loss, frame_mse
 
