@@ -222,8 +222,13 @@ def run(GP):
                 os.makedirs(GP['save_path'])
 
         model_json = molecular_model.to_json()
-        with open(GP['save_path'] + '/model.json', "w") as json_file:
+        encoder_json = molecular_encoder.to_json()
+	with open(GP['save_path'] + '/model.json', "w") as json_file:
             json_file.write(model_json)
+
+	with open(GP['save_path'] + '/encoder.json', "w") as json_file:
+            json_file.write(encoder_json)
+
         print('Saved model to disk')
 
 #### Train the Model

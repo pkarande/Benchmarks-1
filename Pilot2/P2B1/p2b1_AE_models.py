@@ -37,6 +37,7 @@ def conv_dense_mol_auto(bead_k_size=20, mol_k_size=12, weights_path=None, input_
                                     kernel_initializer='glorot_normal', use_bias=bias)(input_img)
             encoded = BatchNormalization()(encoded)
             encoded = Dropout(drop)(encoded)
+
         elif i == 1:
             encoded = Convolution2D(l, mol_k_size, strides=(1, mol_k_size), padding='same',
                                     activation=nonlinearity, kernel_regularizer=l2(l2_reg),
@@ -44,7 +45,13 @@ def conv_dense_mol_auto(bead_k_size=20, mol_k_size=12, weights_path=None, input_
             encoded = BatchNormalization()(encoded)
             encoded = Dropout(drop)(encoded)
             encoded = Flatten()(encoded)
-        else:
+
+        elif i == len(hidden_layers) - 1:
+            encoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg),
+                            kernel_initializer='glorot_normal', use_bias=bias)(encoded)
+            encoded = BatchNormalization()(encoded)
+
+	else:
             encoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg),
                             kernel_initializer='glorot_normal', use_bias=bias)(encoded)
             encoded = BatchNormalization()(encoded)
@@ -86,6 +93,10 @@ def dense_auto(weights_path=None, input_shape=(784,), hidden_layers=None, nonlin
             encoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg))(input_img)
             encoded = BatchNormalization()(encoded)
             encoded = Dropout(drop)(encoded)
+
+        elif i == len(hidden_layers) - 1:
+            encoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg))(encoded)
+            encoded = BatchNormalization()(encoded) 
 
         else:
             encoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg))(encoded)

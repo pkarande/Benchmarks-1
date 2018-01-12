@@ -426,6 +426,7 @@ class Candle_Molecular_Train():
             os.makedirs(self.save_path+'/epoch_'+str(i))
             current_path = self.save_path+'epoch_'+str(i)
             model_weight_file = '%s/%s.hdf5' % (current_path, 'model_weights')
+	    encoder_weight_file = '%s/%s.hdf5' % (current_path, 'encoder_weights')	
 
             for curr_file, xt_all, yt_all in self.datagen(i):
                 for frame in range(len(xt_all)):
@@ -440,8 +441,9 @@ class Candle_Molecular_Train():
                         print ("Frame: {0:d}, Current history:\nLoss: {1:3.5f}\tMSE: {2:3.5f}\n"
                                .format(frame, history.history['loss'][0], history.history['mean_squared_error'][0]))
 
-                        # Update weights file every few frames
+                        # Update weights filed every few frames
                         self.molecular_model.save_weights(model_weight_file)
+			self.molecular_encoder.save_weights(encoder_weight_file)
 
             # save Loss and mse
             print ("\nSaving loss and mse after current epoch... \n")
@@ -450,9 +452,9 @@ class Candle_Molecular_Train():
 
             # Update weights file
             self.molecular_model.save_weights(model_weight_file)
+            self.molecular_encoder.save_weights(encoder_weight_file)
 
             print ("\nSaving latent space output for current epoch... \n")
-
             for curr_file, xt_all, yt_all in self.datagen(0, 0):
                 XP = []
                 for frame in range(len(xt_all)):
