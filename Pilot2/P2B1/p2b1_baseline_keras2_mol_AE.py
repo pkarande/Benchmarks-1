@@ -179,20 +179,21 @@ def run(GP):
                                                                            l2_reg=GP['weight_decay'],
                                                                            drop=GP['drop_prob'])
     elif full_conv_bool:
-        molecular_model, molecular_encoder = AE_models.full_dense_mol_auto(bead_k_size=bead_kernel_size,
-                                                                           mol_k_size=mol_kernel_size,
-                                                                           weights_path=None,
-                                                                           input_shape=(1, molecular_input_dim, 1),
-                                                                           nonlinearity=molecular_nonlinearity,
-                                                                           hidden_layers=molecular_hidden_layers,
-                                                                           l2_reg=GP['weight_decay'],
-                                                                           drop=GP['drop_prob'])
+        molecular_model, molecular_encoder = AE_models.full_conv_mol_auto(bead_k_size=bead_kernel_size,
+                                                                          mol_k_size=mol_kernel_size,
+                                                                          weights_path=None,
+                                                                          input_shape=(1, molecular_input_dim, 1),
+                                                                          nonlinearity=molecular_nonlinearity,
+                                                                          hidden_layers=molecular_hidden_layers,
+                                                                          l2_reg=GP['weight_decay'],
+                                                                          drop=GP['drop_prob'])
 
     else:
-        molecular_model = AE_models.dense_auto(weights_path=None, input_shape=(molecular_input_dim,),
-                                               nonlinearity=molecular_nonlinearity,
-                                               hidden_layers=molecular_hidden_layers,
-                                               l2_reg=GP['weight_decay'])
+        molecular_model, molecular_encoder = AE_models.dense_auto(weights_path=None, input_shape=(molecular_input_dim,),
+                                                                  nonlinearity=molecular_nonlinearity,
+                                                                  hidden_layers=molecular_hidden_layers,
+                                                                  l2_reg=GP['weight_decay'],
+                                                                  drop=GP['drop_prob'])
 
     molecular_model.compile(optimizer=opt, loss=helper.combined_loss, metrics=['mean_squared_error', 'mean_absolute_error'])
     molecular_model.summary()
@@ -217,19 +218,19 @@ def run(GP):
     loss = 0.
 
 #### Save the Model to disk
-    if GP['save_path'] != None:
+    if GP['save_path'] is not None:
         if not os.path.exists(GP['save_path']):
                 os.makedirs(GP['save_path'])
 
         model_json = molecular_model.to_json()
         encoder_json = molecular_encoder.to_json()
-	with open(GP['save_path'] + '/model.json', "w") as json_file:
+    with open(GP['save_path'] + '/model.json', "w") as json_file:
             json_file.write(model_json)
 
-	with open(GP['save_path'] + '/encoder.json', "w") as json_file:
+    with open(GP['save_path'] + '/encoder.json', "w") as json_file:
             json_file.write(encoder_json)
 
-        print('Saved model to disk')
+    print('Saved model to disk')
 
 #### Train the Model
     if GP['train_bool']:
@@ -240,6 +241,7 @@ def run(GP):
                                            len_molecular_hidden_layers=len_molecular_hidden_layers,
                                            molecular_nbrs=molecular_nbrs,
                                            conv_bool=conv_bool,
+                                           full_conv_bool=full_conv_bool,
                                            type_bool=GP['type_bool'])
 #            ct=hf.Candle_Train(datagen,model,data_files,effec_epochs,case=GP['case'])
             frame_loss, frame_mse = ct.train_ac()

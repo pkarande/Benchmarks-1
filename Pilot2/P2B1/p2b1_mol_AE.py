@@ -285,7 +285,7 @@ class Candle_Train():
 class Candle_Molecular_Train():
     def __init__(self, molecular_ammodel, molecular_encoder, numpylist, mnb_epochs, callbacks, save_path='.', batch_size=32, case='Full',
                  print_data=True, epsilon=.064, len_molecular_hidden_layers=1, molecular_nbrs=0,
-                 conv_bool=False, type_bool=False):
+                 conv_bool=False, full_conv_bool=False, type_bool=False):
         self.numpylist = numpylist
         self.molecular_model = molecular_ammodel
         self.molecular_encoder = molecular_encoder
@@ -297,7 +297,8 @@ class Candle_Molecular_Train():
         self.epsilon = epsilon
         self.len_molecular_hidden_layers = len_molecular_hidden_layers
         self.molecular_nbrs = molecular_nbrs
-        self.conv_net = conv_bool
+        self.conv_net = conv_bool or full_conv_bool
+        self.full_conv_net = full_conv_bool
         self.type_feature = type_bool
         self.save_path = save_path+'/'
 
@@ -341,6 +342,8 @@ class Candle_Molecular_Train():
 
                 yt = xt.copy()
                 xt = xt.reshape(xt.shape[0], 1, xt.shape[1], 1)
+                if self.full_conv_net:
+                    yt = xt.copy()
 
             else:
                 xt = Xnorm[i].reshape(X_all.shape[1], input_feature_dim)
@@ -397,6 +400,8 @@ class Candle_Molecular_Train():
 
                     yt = xt.copy()
                     xt = xt.reshape(xt.shape[0], 1, xt.shape[1], 1)
+                    if self.full_conv_net:
+                        yt = xt.copy()
 
                 else:
                     xt = Xnorm[i].reshape(X.shape[1], input_feature_dim)
@@ -426,7 +431,7 @@ class Candle_Molecular_Train():
             os.makedirs(self.save_path+'/epoch_'+str(i))
             current_path = self.save_path+'epoch_'+str(i)
             model_weight_file = '%s/%s.hdf5' % (current_path, 'model_weights')
-	    encoder_weight_file = '%s/%s.hdf5' % (current_path, 'encoder_weights')	
+            encoder_weight_file = '%s/%s.hdf5' % (current_path, 'encoder_weights')
 
             for curr_file, xt_all, yt_all in self.datagen(i):
                 for frame in range(len(xt_all)):
@@ -443,7 +448,7 @@ class Candle_Molecular_Train():
 
                         # Update weights filed every few frames
                         self.molecular_model.save_weights(model_weight_file)
-			self.molecular_encoder.save_weights(encoder_weight_file)
+            self.molecular_encoder.save_weights(encoder_weight_file)
 
             # save Loss and mse
             print ("\nSaving loss and mse after current epoch... \n")
@@ -469,6 +474,7 @@ class Candle_Molecular_Train():
                 np.save(fout, XP)
 
         return frame_loss, frame_mse
+
 
 class Candle_Composite_Train():
     def __init__(self, datagen, model, molecular_ammodel, numpylist,mnb_epochs,nb_epochs,callbacks,save_path='.', batch_size=32,case='Full',print_data=True,scale_factor=1,epsilon=.064,len_molecular_hidden_layers=1,molecular_nbrs=0,conv_bool=False,type_bool=False):
