@@ -448,7 +448,7 @@ class Candle_Molecular_Train():
 
                         # Update weights filed every few frames
                         self.molecular_model.save_weights(model_weight_file)
-            self.molecular_encoder.save_weights(encoder_weight_file)
+                        self.molecular_encoder.save_weights(encoder_weight_file)
 
             # save Loss and mse
             print ("\nSaving loss and mse after current epoch... \n")
