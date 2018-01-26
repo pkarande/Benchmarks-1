@@ -181,7 +181,7 @@ def dense_auto(weights_path=None, input_shape=(784,), hidden_layers=None, nonlin
             encoded = Dropout(drop)(encoded)
 
         elif i == len(hidden_layers) - 1:
-            encoded = Dense(l, activation=nonlinearity, kernel_regularizer=l2(l2_reg))(encoded)
+            encoded = Dense(l, activation='tanh', kernel_regularizer=l2(l2_reg))(encoded)
             encoded = BatchNormalization()(encoded)
 
         else:

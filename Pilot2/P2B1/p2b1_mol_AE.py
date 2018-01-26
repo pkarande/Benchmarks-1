@@ -366,7 +366,7 @@ class Candle_Molecular_Train():
         resnums_all = np.array([])
         files = self.numpylist
     # Training only on few files
-        order = range(13, 17)
+        order = range(11, 19)
         # Randomize files after first training epoch
         if epoch:
             order = np.random.permutation(order)
@@ -404,9 +404,8 @@ class Candle_Molecular_Train():
                         yt = xt.copy()
 
                 else:
-                    xt = Xnorm[i].reshape(X.shape[1], input_feature_dim)
-                    xt = helper.append_nbrs(xt, nbrs[i], self.molecular_nbrs)
-
+                    xt = Xnorm[i]
+                    xt = helper.append_nbrs_relative(xt, nbrs[i], self.molecular_nbrs)
                     yt = xt.copy()
 
                 if not len(xt_all):
