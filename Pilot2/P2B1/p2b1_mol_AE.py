@@ -366,7 +366,7 @@ class Candle_Molecular_Train():
         resnums_all = np.array([])
         files = self.numpylist
     # Training only on few files
-        order = range(11, 19)
+        order = range(13, 17)
         # Randomize files after first training epoch
         if epoch:
             order = np.random.permutation(order)

@@ -139,17 +139,20 @@ def run(GP):
     molecular_nbrs = np.int(GP['molecular_nbrs'])
     if not GP['type_bool']:
         # only consider molecular location coordinates
-        dim = np.prod([X.shape[2], X.shape[3]-5, molecular_nbrs+1])
+        # -1 for reduced dimensions when using relative angles and dist 
+        dim = np.prod([X.shape[2], X.shape[3]-5-1, molecular_nbrs+1])
 
         molecular_input_dim = dim
         molecular_output_dim = dim
-        bead_kernel_size = X.shape[3] - 5
+        bead_kernel_size = X.shape[3] - 5 - 1
         mol_kernel_size = 12  # (X.shape[3]-5)*X.shape[2]
     else:
-        dim = np.prod(X.shape[2:]+(molecular_nbrs+1,))
+        # -1 for reduced dimensions when using relative angles and dist
+        dim = np.prod([X.shape[2], X.shape[3]-1, molecular_nbrs+1])
+        #dim = np.prod(X.shape[2:]+(molecular_nbrs+1,))
 
         molecular_input_dim = dim
-        bead_kernel_size = X.shape[3]
+        bead_kernel_size = X.shape[3] - 1
         mol_kernel_size = 12  # X.shape[3]*X.shape[2]
 
     print ('The input/output dimension to the Moelecular AE is ', molecular_input_dim)
