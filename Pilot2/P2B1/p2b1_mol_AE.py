@@ -396,7 +396,7 @@ class Candle_Molecular_Train():
 
                 if self.conv_net:
                     xt = Xnorm[i]
-                    xt = helper.append_nbrs_relative(xt, nbrs[i], self.molecular_nbrs)
+                    xt = helper.get_neighborhood_features(xt, nbrs[i], self.molecular_nbrs)
 
                     yt = xt.copy()
                     xt = xt.reshape(xt.shape[0], 1, xt.shape[1], 1)
@@ -405,7 +405,7 @@ class Candle_Molecular_Train():
 
                 else:
                     xt = Xnorm[i]
-                    xt = helper.append_nbrs_relative(xt, nbrs[i], self.molecular_nbrs)
+                    xt = helper.get_neighborhood_features(xt, nbrs[i], self.molecular_nbrs)
                     yt = xt.copy()
 
                 if not len(xt_all):
