@@ -15,3 +15,4 @@ Pilot2/P2B1/moleAE_results/
 *.sh
 Pilot2/P2B1/molecular_AE_results/
 Pilot2/P2B2/
+clustering/clustering_wAEfeats.py
