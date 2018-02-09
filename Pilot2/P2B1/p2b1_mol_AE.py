@@ -360,13 +360,16 @@ class Candle_Molecular_Train():
 
         return xt_all, yt_all
 
-    def datagen(self, epoch=0, print_out=1):
+    def datagen(self, epoch=0, print_out=1, test=0):
         X_all = np.array([])
         nbrs_all = np.array([])
         resnums_all = np.array([])
         files = self.numpylist
     # Training only on few files
-        order = range(13, 17)
+	if not test: 
+            order = [13, 15, 16]
+        else:
+            order = [14]
         # Randomize files after first training epoch
         if epoch:
             order = np.random.permutation(order)
@@ -396,7 +399,8 @@ class Candle_Molecular_Train():
 
                 if self.conv_net:
                     xt = Xnorm[i]
-                    xt = helper.get_neighborhood_features(xt, nbrs[i], self.molecular_nbrs)
+                    xt = helper.append_nbrs_relative(xt, nbrs[i], self.molecular_nbrs)
+                #    xt = helper.get_neighborhood_features(xt, nbrs[i], self.molecular_nbrs)
 
                     yt = xt.copy()
                     xt = xt.reshape(xt.shape[0], 1, xt.shape[1], 1)
@@ -405,7 +409,8 @@ class Candle_Molecular_Train():
 
                 else:
                     xt = Xnorm[i]
-                    xt = helper.get_neighborhood_features(xt, nbrs[i], self.molecular_nbrs)
+                    xt = helper.append_nbrs_relative(xt, nbrs[i], self.molecular_nbrs)
+                #    xt = helper.get_neighborhood_features(xt, nbrs[i], self.molecular_nbrs)
                     yt = xt.copy()
 
                 if not len(xt_all):
@@ -459,7 +464,7 @@ class Candle_Molecular_Train():
             self.molecular_encoder.save_weights(encoder_weight_file)
 
             print ("\nSaving latent space output for current epoch... \n")
-            for curr_file, xt_all, yt_all in self.datagen(0, 0):
+            for curr_file, xt_all, yt_all in self.datagen(0, 0, test=1):
                 XP = []
                 for frame in range(len(xt_all)):
                     # get latent space activation output, +1 to incorporate the flatten layer
