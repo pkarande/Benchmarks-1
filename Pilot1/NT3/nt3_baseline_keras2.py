@@ -143,6 +143,20 @@ def load_data(train_path, test_path, gParameters):
     df_x_train = df_train[:, 1:seqlen].astype(np.float32)
     df_x_test = df_test[:, 1:seqlen].astype(np.float32)
 
+    my_mpi_rank = hvd.rank()
+    total_ranks = hvd.size()
+    input_size = df_train.shape[0]
+    per_rank_count =  int( input_size / total_ranks)
+    overloaded_ranks = input_size % total_ranks
+    if my_mpi_rank < overloaded_ranks: 
+        start = my_mpi_rank * (per_rank_count + 1) 
+        end = start + (per_rank_input)
+    else:
+        start = my_mpi_rank * per_rank_count + overloaded_ranks 
+        stop = start + per_rank_count - 1
+        
+    print ("size:{0}, rank:{1}, start:{2}, stop:{3}".format(total_ranks, my_mpi_rank, start, stop))
+
 #        X_train = df_x_train.as_matrix()
 #        X_test = df_x_test.as_matrix()
 
@@ -156,7 +170,7 @@ def load_data(train_path, test_path, gParameters):
     X_train = mat[:X_train.shape[0], :]
     X_test = mat[X_train.shape[0]:, :]
 
-    return X_train, Y_train, X_test, Y_test
+    return X_train[start:stop, :], Y_train[start:stop, :], X_test, Y_test
 
 
 def run(gParameters):
@@ -280,7 +294,7 @@ def run(gParameters):
     history = model.fit(X_train, Y_train,
                     batch_size=gParameters['batch_size'],
                     epochs=gParameters['epochs'],
-                    verbose=0,
+                    verbose=1,
                     validation_data=(X_test, Y_test),
                     callbacks = [csv_logger, candleRemoteMonitor, timeoutMonitor])
 
