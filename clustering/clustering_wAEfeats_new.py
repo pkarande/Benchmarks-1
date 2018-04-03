@@ -113,7 +113,7 @@ def main(frame_num, aeFileDir, leafletDir, featureDir, epsilon, num_samples, per
     # Set colormap
     # c_map = 'gist_earth'
     c_map = ListedColormap(sns.color_palette("tab20").as_hex())
-
+    c_map = 'jet'
     # Function to create Hull
     def createHull(pred_all, splot, hullAlpha=0.4):
         clust_labels = pred_all
