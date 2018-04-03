@@ -150,7 +150,7 @@ def load_data(train_path, test_path, gParameters):
     overloaded_ranks = input_size % total_ranks
     if my_mpi_rank < overloaded_ranks: 
         start = my_mpi_rank * (per_rank_count + 1) 
-        end = start + (per_rank_input)
+        stop = start + (per_rank_count)
     else:
         start = my_mpi_rank * per_rank_count + overloaded_ranks 
         stop = start + per_rank_count - 1
