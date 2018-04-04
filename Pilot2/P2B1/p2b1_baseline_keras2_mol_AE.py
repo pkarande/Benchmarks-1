@@ -1,9 +1,8 @@
 import numpy as np
-import scipy as sp
-import pickle
-import sys, os
+import sys
+import os
 import argparse
-import h5py
+import json
 
 TIMEOUT = 3600  # in sec; set this to -1 for no timeout
 file_path = os.path.dirname(os.path.realpath(__file__))
@@ -25,7 +24,6 @@ import p2b1_AE_models as AE_models
 
 HOME = os.environ['HOME']
 
-
 def parse_list(option, opt, value, parser):
     setattr(parser.values, option.dest, value.split(','))
 
@@ -46,12 +44,13 @@ def initialize_parameters():
 
     parser = get_p2b1_parser()
     args = parser.parse_args()
-    print('Args', args)
+    # print('Args', args)
 
     GP = p2b1.read_config_file(args.config_file)
-    print (GP)
-
     GP = p2c.args_overwrite_config(args, GP)
+
+    print '\nTraining parameters:'
+    print json.dumps(GP, indent=4, skipkeys=True, sort_keys=True)
 
     if GP['backend'] != 'theano' and GP['backend'] != 'tensorflow':
         sys.exit('Invalid backend selected: %s' % GP['backend'])
@@ -64,7 +63,7 @@ def initialize_parameters():
     elif GP['backend'] == 'tensorflow':
         K.set_image_dim_ordering('tf')
     '''
-    print "Image ordering: ", K.image_dim_ordering()
+    print "\nImage ordering: ", K.image_dim_ordering()
     return GP
 
 
@@ -123,7 +122,7 @@ def run(GP):
         num_samples += X.shape[0]
 
     (X, nbrs, resnums) = helper.get_data_arrays(data_files[0])
-    print (X.shape)
+    print '\nData chunk shape: ', X.shape
 
     molecular_hidden_layers = GP['molecular_num_hidden']
     if not molecular_hidden_layers:
@@ -133,35 +132,48 @@ def run(GP):
         # computing input dimension for outer AE
         input_dim = X.shape[1]*molecular_hidden_layers[-1]
 
-    print ('The input dimension to the State AE is ', input_dim)
+    print '\nState AE input/output dimension: ', input_dim
 
     # get data dimension for molecular autoencoder
     molecular_nbrs = np.int(GP['molecular_nbrs'])
+    num_molecules = X.shape[1]
+    num_beads = X.shape[2]
+
+    if GP['nbr_type'] == 'relative':
+        # relative x, y, z positions
+        num_loc_features = 3
+        loc_feat_vect = ['rel_x', 'rel_y', 'rel_z']
+    elif GP['nbr_type'] == 'invariant':
+        # relative distance and angle
+        num_loc_features = 2
+        loc_feat_vect = ['rel_dist', 'rel_angle']
+    else:
+        print 'Invalid nbr_type!!'
+        exit()
+
     if not GP['type_bool']:
         # only consider molecular location coordinates
-        # use -1 for reduced dimensions when using relative angles and dist 
-        dim = np.prod([X.shape[2], X.shape[3]-5, molecular_nbrs+1])
-
-        molecular_input_dim = dim
-        molecular_output_dim = dim
-        bead_kernel_size = X.shape[3] - 5
-        mol_kernel_size = 12  # (X.shape[3]-5)*X.shape[2]
+        num_type_features = 0
+        type_feat_vect = []
     else:
-        # use -1 for reduced dimensions when using relative angles and dist
-        dim = np.prod([X.shape[2], X.shape[3], molecular_nbrs+1])
-        #dim = np.prod(X.shape[2:]+(molecular_nbrs+1,))
+        num_type_features = 5
+        type_feat_vect = fields.keys()[3:8]
 
-        molecular_input_dim = dim
-        bead_kernel_size = X.shape[3]
-        mol_kernel_size = 12  # X.shape[3]*X.shape[2]
+    num_features = num_loc_features + num_type_features + num_beads
+    dim = np.prod([num_beads, num_features, molecular_nbrs+1])
+    bead_kernel_size = num_features
+    molecular_input_dim = dim
+    mol_kernel_size = num_beads
 
-    print ('The input/output dimension to the Moelecular AE is ', molecular_input_dim)
+    feature_vector = loc_feat_vect + type_feat_vect + fields.keys()[8:]
 
-    print ('Data Format:\n  [Frames (%s), Molecules (%s), Beads (%s), %s (%s)]' % (
-           num_samples, X.shape[1], X.shape[2], fields.keys(), X.shape[3]))
+    print '\nMoelecular AE input/output dimension: ', molecular_input_dim
+
+    print '\nData Format:\n[Frames (%s), Molecules (%s), Beads (%s), %s (%s)]' % (
+           num_samples, num_molecules, num_beads, feature_vector, num_features)
 
 ### Define Model, Solver and Compile ##########
-    print ('Define the model and compile')
+    print ('\nDefine the model and compile')
     opt = p2ck.build_optimizer(GP['optimizer'], learning_rate, kerasDefaults)
     model_type = 'mlp'
     memo = '%s_%s' % (GP['base_memo'], model_type)
@@ -179,7 +191,7 @@ def run(GP):
                                                                            input_shape=(1, molecular_input_dim, 1),
                                                                            nonlinearity=molecular_nonlinearity,
                                                                            hidden_layers=molecular_hidden_layers,
-                                                                           l2_reg=GP['weight_decay'],
+                                                                           l2_reg=GP['l2_reg'],
                                                                            drop=GP['drop_prob'])
     elif full_conv_bool:
         molecular_model, molecular_encoder = AE_models.full_conv_mol_auto(bead_k_size=bead_kernel_size,
@@ -188,17 +200,23 @@ def run(GP):
                                                                           input_shape=(1, molecular_input_dim, 1),
                                                                           nonlinearity=molecular_nonlinearity,
                                                                           hidden_layers=molecular_hidden_layers,
-                                                                          l2_reg=GP['weight_decay'],
+                                                                          l2_reg=GP['l2_reg'],
                                                                           drop=GP['drop_prob'])
 
     else:
         molecular_model, molecular_encoder = AE_models.dense_auto(weights_path=None, input_shape=(molecular_input_dim,),
                                                                   nonlinearity=molecular_nonlinearity,
                                                                   hidden_layers=molecular_hidden_layers,
-                                                                  l2_reg=GP['weight_decay'],
+                                                                  l2_reg=GP['l2_reg'],
                                                                   drop=GP['drop_prob'])
 
-    molecular_model.compile(optimizer=opt, loss=helper.combined_loss, metrics=['mean_squared_error', 'mean_absolute_error'])
+    if GP['loss'] == 'mse':
+        loss_func = 'mse'
+    elif GP['loss'] == 'custom':
+        loss_func = helper.combined_loss
+
+    molecular_model.compile(optimizer=opt, loss=loss_func, metrics=['mean_squared_error', 'mean_absolute_error'])
+    print '\nModel Summary: \n'
     molecular_model.summary()
     ##### set up callbacks and cooling for the molecular_model ##########
     drop = 0.5
@@ -237,28 +255,18 @@ def run(GP):
 
 #### Train the Model
     if GP['train_bool']:
-        if not str2bool(GP['cool']):
-            effec_epochs = GP['epochs']
-            ct = hf.Candle_Molecular_Train(molecular_model, molecular_encoder, data_files, mb_epochs, callbacks,
-                                           batch_size=32, case=GP['case'], save_path=GP['save_path'],
-                                           len_molecular_hidden_layers=len_molecular_hidden_layers,
-                                           molecular_nbrs=molecular_nbrs,
-                                           conv_bool=conv_bool,
-                                           full_conv_bool=full_conv_bool,
-                                           type_bool=GP['type_bool'])
-#            ct=hf.Candle_Train(datagen,model,data_files,effec_epochs,case=GP['case'])
-            frame_loss, frame_mse = ct.train_ac()
-        else:
-            effec_epochs=GP['epochs']//3
-            ct=hf.Candle_Train(datagen,model,data_files,effec_epochs,case=GP['case'])
-            loss=[]
-            for i in range(3):
-                lr=GP['learning_rate']/10**i
-                ct.model.optimizer.lr.set_value(lr)
-                if i>0:
-                    ct.print_data=False
-                    print ('Cooling Learning Rate by factor of 10...')
-                loss.extend(ct.train_ac())
+        ct = hf.Candle_Molecular_Train(molecular_model, molecular_encoder, data_files, mb_epochs, callbacks,
+                                       batch_size=32, nbr_type=GP['nbr_type'], save_path=GP['save_path'],
+                                       len_molecular_hidden_layers=len_molecular_hidden_layers,
+                                       molecular_nbrs=molecular_nbrs,
+                                       conv_bool=conv_bool,
+                                       full_conv_bool=full_conv_bool,
+                                       type_bool=GP['type_bool'])
+    #            ct=hf.Candle_Train(datagen,model,data_files,effec_epochs,case=GP['case'])
+        frame_loss, frame_mse = ct.train_ac()
+    else:
+        frame_mse = []
+        frame_loss = []
 
     return frame_loss, frame_mse
 

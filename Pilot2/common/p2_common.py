@@ -209,7 +209,7 @@ def args_overwrite_config(args, config):
 
 
     if 'datatype' not in params:
-        params['datatype'] = DEFAULT_DATATYPE
+        params['datatype'] = str(DEFAULT_DATATYPE)
     else:
         if params['datatype'] in set(['f16', 'f32', 'f64']):
             params['datatype'] = get_choice(params['datatype'])

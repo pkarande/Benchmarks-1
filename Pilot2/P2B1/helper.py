@@ -32,7 +32,7 @@ def orientationVector(x0, x1, dimensions):
         delta = x0[:, :, i] - x1[i]
         delta = np.where(delta > 0.5 * dimensions[i], delta - dimensions[i], delta)
         delta = np.where(delta < - (0.5 * dimensions[i]), delta + dimensions[i], delta)
-        x[:,:,i] = delta
+        x[:, :, i] = delta
     return x
 
 
@@ -109,7 +109,7 @@ def get_data_arrays(f):
     return (X, nbrs, resnums)
 
 
-def get_neighborhood_features(x, nbrs, num_nbrs):
+def append_nbrs_invariant(x, nbrs, num_nbrs):
     '''
     Create a neighborhood feature vetor for each molecule in the frame
     Drops x, y, z values
