@@ -52,7 +52,6 @@ def p2b1_parser(parser):
 #    parser.add_argument("--train", action="store_true",dest="train_bool",default=True,help="Invoke training")
 #    parser.add_argument("--evaluate", action="store_true",dest="eval_bool",default=False,help="Use model for inference")
 #    parser.add_argument("--home-dir",help="Home Directory",dest="home_dir",type=str,default='.')
-    parser.add_argument("--save-dir",help="Save Directory",dest="save_path",type=str,default=None)
     parser.add_argument("--config-file",help="Config File",dest="config_file",type=str,default=os.path.join(file_path, 'p2b1_default_model.txt'))
     parser.add_argument("--model-file",help="Trained Model Pickle File",dest="weight_path",type=str,default=None)
     parser.add_argument("--memo",help="Memo",dest="base_memo",type=str,default=None)
@@ -94,6 +93,8 @@ def read_config_file(File):
     Global_Params['molecular_nbrs']         =config.get(section[0],'molecular_nbrs')
     Global_Params['drop_prob']              = config.get(section[0], 'drop_prob')
     Global_Params['l2_reg']                 = eval(config.get(section[0], 'l2_reg'))
+    Global_Params['sampling_density']       = eval(config.get(section[0], 'sampling_density'))
+    Global_Params['save_path']              = eval(config.get(section[0], 'save_path'))
 
     # parse the remaining values
     for k,v in config.items(section[0]):
@@ -249,7 +250,7 @@ class Candle_Molecular_Train():
 
         # choose a random sample to train on
         if not test:
-            order = random.sample(self.train_ind, int(self.sampling_density*len(self.train_ind)))
+            order = random.sample(list(self.train_ind), int(self.sampling_density*len(self.train_ind)))
         else:
             order = self.test_ind
 
@@ -273,7 +274,12 @@ class Candle_Molecular_Train():
             xt_all = np.array([])
             yt_all = np.array([])
 
-            for i in range(num_frames):
+            #for i in range(num_frames):
+            num_active_frames = random.sample(range(num_frames), int(self.sampling_density*num_frames))
+
+            print('Datagen on the following frames', num_active_frames)
+
+            for i in num_active_frames:
 
                 if self.conv_net:
                     xt = Xnorm[i]
@@ -328,8 +334,8 @@ class Candle_Molecular_Train():
             encoder_weight_file = '%s/%s.hdf5' % (current_path, 'encoder_weights')
 
             for curr_file, xt_all, yt_all in self.datagen(i):
-                for frame in random.sample(range(len(xt_all)), int(self.sampling_density*len(xt_all))):
-
+                #for frame in random.sample(range(len(xt_all)), int(self.sampling_density*len(xt_all))):
+                for frame in range(len(xt_all)):
                     history = self.molecular_model.fit(xt_all[frame], yt_all[frame], epochs=1,
                                                        batch_size=self.batch_size, callbacks=self.callbacks[:2],
                                                        verbose=2)

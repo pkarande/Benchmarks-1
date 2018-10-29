@@ -4,8 +4,14 @@ import pickle
 import sys, os, json
 import argparse
 import h5py
-# from importlib import reload
-
+try:
+    reload  # Python 2.7
+except NameError:
+    try:
+        from importlib import reload  # Python 3.4+
+    except ImportError:
+        from imp import reload  # Python 3.0 - 3.3
+        
 TIMEOUT=3600 # in sec; set this to -1 for no timeout
 file_path = os.path.dirname(os.path.realpath(__file__))
 lib_path = os.path.abspath(os.path.join(file_path, '..', 'common'))
@@ -53,9 +59,9 @@ def initialize_parameters():
 
     GP = p2c.args_overwrite_config(args, GP)
 
-    print '\nTraining parameters:'
+    print ('\nTraining parameters:')
     for key in sorted(GP):
-        print "\t%s: %s" % (key, GP[key])
+        print ("\t%s: %s" % (key, GP[key]))
         
     # print json.dumps(GP, indent=4, skipkeys=True, sort_keys=True)
 
@@ -116,10 +122,13 @@ def run(GP):
 
 ##### Read Data ########
     import helper
-    # (data_files, fields)=p2c.get_list_of_data_files(GP)
+    (data_files, fields)=p2c.get_list_of_data_files(GP)
     # Read from local directoy
     #(data_files, fields) = helper.get_local_files('/p/gscratchr/brainusr/datasets/cancer/pilot2/GP['set_sel']_10us.35fs-DPPC.20-DIPC.60-CHOL.20.dir/')
     (data_files, fields) = helper.get_local_files(GP['set_sel'])
+    #(data_files, fields) = helper.get_local_files('/p/gscratchr/brainusr/datasets/cancer/pilot2/3k_run16_10us.35fs-DPPC.20-DIPC.60-CHOL.20.dir/')
+    #(data_files, fields) = helper.get_local_files('3k_run16', '/p/lscratchf/brainusr/datasets/cancer/pilot2/')
+
     # Define datagenerator
     datagen = hf.ImageNoiseDataGenerator(corruption_level=GP['noise_factor'])
 
@@ -159,7 +168,7 @@ def run(GP):
         num_loc_features = 2
         loc_feat_vect = ['rel_dist', 'rel_angle']
     else:
-        print 'Invalid nbr_type!!'
+        print ('Invalid nbr_type!!')
         exit()
 
     if not GP['type_bool']:
@@ -176,12 +185,12 @@ def run(GP):
     molecular_input_dim = dim
     mol_kernel_size = num_beads
 
-    feature_vector = loc_feat_vect + type_feat_vect + fields.keys()[8:]
+    feature_vector = loc_feat_vect + type_feat_vect + list(fields.keys())[8:]
 
-    print 'Moelecular AE input/output dimension: ', molecular_input_dim
+    print ('\nMolecular AE input/output dimension: ', molecular_input_dim)
 
-    print '\nData Format:\n[Frames (%s), Molecules (%s), Beads (%s), %s (%s)]' % (
-           num_samples, num_molecules, num_beads, feature_vector, num_features)
+    print ('\nData Format:\n[Frames (%s), Molecules (%s), Beads (%s), %s (%s)]' % (
+        num_samples, num_molecules, num_beads, feature_vector, num_features))
 
 ### Define Model, Solver and Compile ##########
     print ('\nDefine the model and compile')
@@ -203,7 +212,7 @@ def run(GP):
                                                                            nonlinearity=molecular_nonlinearity,
                                                                            hidden_layers=molecular_hidden_layers,
                                                                            l2_reg=GP['l2_reg'],
-                                                                           drop=GP['drop_prob'])
+                                                                           drop=float(GP['drop_prob']))
     elif full_conv_bool:
         molecular_model, molecular_encoder = AE_models.full_conv_mol_auto(bead_k_size=bead_kernel_size,
                                                                           mol_k_size=mol_kernel_size,
@@ -212,14 +221,14 @@ def run(GP):
                                                                           nonlinearity=molecular_nonlinearity,
                                                                           hidden_layers=molecular_hidden_layers,
                                                                           l2_reg=GP['l2_reg'],
-                                                                          drop=GP['drop_prob'])
+                                                                          drop=float(GP['drop_prob']))
 
     else:
         molecular_model, molecular_encoder = AE_models.dense_auto(weights_path=None, input_shape=(molecular_input_dim,),
                                                                   nonlinearity=molecular_nonlinearity,
                                                                   hidden_layers=molecular_hidden_layers,
                                                                   l2_reg=GP['l2_reg'],
-                                                                  drop=GP['drop_prob'])
+                                                                  drop=float(GP['drop_prob']))
 
     if GP['loss'] == 'mse':
         loss_func = 'mse'
@@ -227,7 +236,7 @@ def run(GP):
         loss_func = helper.combined_loss
 
     molecular_model.compile(optimizer=opt, loss=loss_func, metrics=['mean_squared_error', 'mean_absolute_error'])
-    print '\nModel Summary: \n'
+    print ('\nModel Summary: \n')
     molecular_model.summary()
     ##### set up callbacks and cooling for the molecular_model ##########
     drop = 0.5

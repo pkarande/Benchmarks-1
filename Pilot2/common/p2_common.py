@@ -8,7 +8,13 @@ import sys
 import gzip
 import argparse
 import glob
-# from importlib import reload
+try:
+    reload  # Python 2.7
+except NameError:
+    try:
+        from importlib import reload  # Python 3.4+
+    except ImportError:
+        from imp import reload  # Python 3.0 - 3.3
 
 from sklearn.preprocessing import Imputer
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, MaxAbsScaler
@@ -46,7 +52,7 @@ def get_default_neon_parse(parser):
 
     # Logging utilities
     parser.add_argument("-s", "--save_path", dest='save_path',
-                        default=argparse.SUPPRESS, type=str,
+                        default=argparse.SUPPRESS, type=str, 
                         help="file path to save model snapshots")
 
     # General behavior
