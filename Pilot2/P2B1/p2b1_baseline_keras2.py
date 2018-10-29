@@ -74,7 +74,7 @@ def initialize_parameters():
 #"th" format means that the convolutional kernels will have the shape (depth, input_depth, rows, cols)
 
 #"tf" format means that the convolutional kernels will have the shape (rows, cols, input_depth, depth)
-    print ("Image data format: ", K.image_data_format())
+    print "\nImage data format: ", K.image_data_format()
 #    print "Image ordering: ", K.image_dim_ordering()
     return GP
 
@@ -118,8 +118,8 @@ def run(GP):
     import helper
     # (data_files, fields)=p2c.get_list_of_data_files(GP)
     # Read from local directoy
-    #(data_files, fields) = helper.get_local_files('/p/gscratchr/brainusr/datasets/cancer/pilot2/3k_run16_10us.35fs-DPPC.20-DIPC.60-CHOL.20.dir/')
-    (data_files, fields) = helper.get_local_files('3k_run16')
+    #(data_files, fields) = helper.get_local_files('/p/gscratchr/brainusr/datasets/cancer/pilot2/GP['set_sel']_10us.35fs-DPPC.20-DIPC.60-CHOL.20.dir/')
+    (data_files, fields) = helper.get_local_files(GP['set_sel'])
     # Define datagenerator
     datagen = hf.ImageNoiseDataGenerator(corruption_level=GP['noise_factor'])
 
@@ -133,7 +133,7 @@ def run(GP):
         num_samples += X.shape[0]
 
     (X, nbrs, resnums) = helper.get_data_arrays(data_files[0])
-    print ('\nData chunk shape: ', X.shape)
+    print 'Data chunk shape: ', X.shape
 
     molecular_hidden_layers = GP['molecular_num_hidden']
     if not molecular_hidden_layers:
@@ -143,7 +143,7 @@ def run(GP):
         # computing input dimension for outer AE
         input_dim = X.shape[1]*molecular_hidden_layers[-1]
 
-    print ('\nState AE input/output dimension: ', input_dim)
+    print 'State AE input/output dimension: ', input_dim
 
     # get data dimension for molecular autoencoder
     molecular_nbrs = np.int(GP['molecular_nbrs'])
@@ -178,7 +178,7 @@ def run(GP):
 
     feature_vector = loc_feat_vect + type_feat_vect + fields.keys()[8:]
 
-    print '\nMoelecular AE input/output dimension: ', molecular_input_dim
+    print 'Moelecular AE input/output dimension: ', molecular_input_dim
 
     print '\nData Format:\n[Frames (%s), Molecules (%s), Beads (%s), %s (%s)]' % (
            num_samples, num_molecules, num_beads, feature_vector, num_features)

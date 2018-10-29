@@ -59,7 +59,7 @@ def p2b1_parser(parser):
     parser.add_argument("--seed", action="store_true",dest="seed",default=False,help="Random Seed")
     parser.add_argument("--case",help="[Full, Center, CenterZ]",dest="case",type=str,default='Full')
     parser.add_argument("--fig", action="store_true",dest="fig_bool",default=False,help="Generate Prediction Figure")
-    parser.add_argument("--data-set",  help="[3k_run16, 3k_run10, 3k_run32]", dest="set_sel", type=str, default="3k_run16")
+    parser.add_argument("--data-set",  help="[3k_run16, 3k_run7, 3k_run11, 3k_run10, 3k_run32]", dest="set_sel", type=str, default="3k_run16")
     parser.add_argument("--conv-AE", action="store_true", dest="conv_bool", default=False, help="Invoke training using 1D Convs for inner AE")
     parser.add_argument("--full-conv-AE", action="store_true", dest="full_conv_bool", default=False, help="Invoke training using fully convolutional NN for inner AE")
     parser.add_argument("--include-type", action="store_true", dest="type_bool", default=False, help="Include molecule type information in desining AE")
@@ -231,9 +231,14 @@ class Candle_Molecular_Train():
         self.type_feature = type_bool
         self.save_path = save_path+'/'
         self.sampling_density = sampling_density
+	
+	# self.files = files[7:]
+	self.test_ind = [14]   # random.sample(range(len(self.files)), 1)
+	# ignore the first 600 frames and test file
+        self.train_ind = np.setdiff1d(range(6, len(self.files)), self.test_ind)
 
-        self.test_ind = random.sample(range(len(self.files)), 1)
-        self.train_ind = np.setdiff1d(range(len(self.files)), self.test_ind)
+	print ('Training set:\n', self.train_ind)
+        print ('Testing set:\n', self.test_ind)
 
     def datagen(self, epoch=0, print_out=1, test=0):
         files = self.files
@@ -327,12 +332,12 @@ class Candle_Molecular_Train():
 
                     history = self.molecular_model.fit(xt_all[frame], yt_all[frame], epochs=1,
                                                        batch_size=self.batch_size, callbacks=self.callbacks[:2],
-                                                       verbose=0)
+                                                       verbose=2)
                     frame_loss.append(history.history['loss'])
                     frame_mse.append(history.history['mean_squared_error'])
 
                     if not frame % 20 or self.sampling_density != 1.0:
-                        print ("Frame: {0:d}, Current history:\nLoss: {1:3.5f}\tMSE: {2:3.5f}\n"
+                        print ("Frame: {0:2d}\tLoss: {1:3.5f}\tMSE: {2:3.5f}"
                                .format(frame, history.history['loss'][0], history.history['mean_squared_error'][0]))
 
                         # Update weights filed every few frames
@@ -340,7 +345,7 @@ class Candle_Molecular_Train():
                         self.molecular_encoder.save_weights(encoder_weight_file)
 
             # save Loss and mse
-            print ("Saving loss and mse after current epoch... \n")
+            print ("\nSaving loss and mse after current epoch... \n")
             np.save(current_path+'/loss.npy', frame_loss)
             np.save(current_path+'/mse.npy', frame_mse)
 

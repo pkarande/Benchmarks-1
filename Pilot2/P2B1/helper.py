@@ -88,6 +88,10 @@ def get_local_files(data_tag="3k_run16"):
         data_dir = '/p/gscratchr/brainusr/datasets/cancer/pilot2/3k_run10_10us.35fs-DPPC.10-DOPC.70-CHOL.20.dir/'
     elif data_tag == '3k_run32':
         data_dir = '/p/gscratchr/brainusr/datasets/cancer/pilot2/3k_run32_10us.35fs-DPPC.50-DOPC.10-CHOL.40.dir/'
+    elif data_tag == '3k_run7':
+	data_dir = '/p/gscratchr/brainusr/datasets/cancer/pilot2/3k_run7_10us.35fs-DPPC.10-DIPC.40-CHOL.50.dir'
+    elif data_tag == '3k_run11':
+	data_dir = '/p/gscratchr/brainusr/datasets/cancer/pilot2/3k_run11_10us.35fs-DPPC.10-DIPC.80-CHOL.10.dir'
 
     data_files = glob.glob('%s/*.npz' % data_dir)
     filelist = [d for d in data_files if 'AE' not in d]

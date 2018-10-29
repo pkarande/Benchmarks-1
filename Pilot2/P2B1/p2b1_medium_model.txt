@@ -1,9 +1,19 @@
 [Global_Params]
-num_hidden=[5120,2560,1280,640,320,160]
+num_hidden=[512,32]
 batch_size=32
-learning_rate=0.01
+learning_rate=0.0001
 epochs=10
-cool=True
-weight_decay=0.0005
-noise_factor=0
+cool=False
+l2_reg=0.01
+noise_factor=0.0
+optimizer='adam'
+loss='custom'
+activation='relu'
+molecular_nonlinearity=elu
+molecular_num_hidden=[256, 64, 16, 8]
+molecular_nbrs = 10
+molecular_epochs=10
 base_memo='p2b1'
+drop_prob = 0.5
+data_set='3k_Ordered'
+sampling_density = 0.5

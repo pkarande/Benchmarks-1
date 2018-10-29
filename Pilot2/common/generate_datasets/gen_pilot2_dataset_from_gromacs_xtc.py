@@ -307,10 +307,6 @@ def flush_chunk_to_file(processname, i, outA, outNbrs, outResnums, outfile, chun
 
 def main():
     mdsys = read_mddata()
-
-    # Get leaflets for the simulation
-    # top_head, bot_head = find_leaflets(mdsys)
-
     (totframes, fchunksize, totalchunks) = partition_work(mdsys)
 
     """Create one process per cpu core and process multiple chunks in parallel
